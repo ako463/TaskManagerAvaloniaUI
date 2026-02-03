@@ -5,16 +5,50 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="TaskManager.Desktop.Views.MainWindow"
-        x:DataType="vm:MainWindowViewModel"
+        x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="TaskManager.Desktop">
+
+    <Window.KeyBindings>
+		<KeyBinding Command="{Binding AddTaskCommand}" Gesture="Enter"/>
+    </Window.KeyBindings>
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
              to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
-        <vm:MainWindowViewModel/>
+        <vm:MainViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+    <DataGrid Margin="20" 
+              ItemsSource="{Binding Tasks}" 
+              SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
+              AutoGenerateColumns="False" 
+              IsReadOnly="False" 
+              GridLinesVisibility="All"
+              SelectionMode="Single"
+              BorderThickness="1" 
+              BorderBrush="Gray">
+
+        <DataGrid.Columns>
+            <DataGridTextColumn Header="ID" 
+                                Binding="{Binding Id}" 
+                                Width="60"
+                                IsReadOnly="True"/>
+        
+            <DataGridTextColumn Header="Task title" 
+                                Binding="{Binding Title}" 
+                                Width="*"
+                                MinWidth="150"/>
+        
+            <DataGridTextColumn Header="Created at" 
+                                Binding="{Binding CreatedAt}" 
+                                Width="140"
+                                IsReadOnly="True"/>
+        
+            <DataGridCheckBoxColumn Header="Completed " 
+                                    Binding="{Binding IsCompleted}" 
+                                    Width="130"/>    
+        </DataGrid.Columns>
+    </DataGrid>
 
 </Window>

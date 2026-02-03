@@ -25,7 +25,7 @@ namespace TaskManager.Desktop
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainWindowViewModel(),
+                    DataContext = new MainViewModel(),
                 };
             }
 
