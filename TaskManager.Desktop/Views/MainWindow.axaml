@@ -11,6 +11,7 @@
 
     <Window.KeyBindings>
 		<KeyBinding Command="{Binding AddTaskCommand}" Gesture="Enter"/>
+        <KeyBinding Command="{Binding SoftDeleteTaskCommand}" Gesture="Delete"/>
     </Window.KeyBindings>
 
     <Design.DataContext>
@@ -20,7 +21,7 @@
     </Design.DataContext>
 
     <DataGrid Margin="20" 
-              ItemsSource="{Binding Tasks}" 
+              ItemsSource="{Binding FilteredTasks}" 
               SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
               AutoGenerateColumns="False" 
               IsReadOnly="False" 

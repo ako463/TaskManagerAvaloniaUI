@@ -12,7 +12,9 @@ namespace TaskManager.Desktop.ViewModels
         [ObservableProperty]
         private TaskModel? _selectedTask;
 
-        public ObservableCollection<TaskModel> Tasks { get; } = new()
+        private ObservableCollection<TaskModel> _filteredItems = new();
+
+        private ObservableCollection<TaskModel> _allTasks { get; } = new()
         {
             new TaskModel()
             {
@@ -48,17 +50,51 @@ namespace TaskManager.Desktop.ViewModels
             }
         };
 
+        public MainViewModel()
+        {
+            ApplyFilter();
+        }
+
+        public ObservableCollection<TaskModel> FilteredTasks
+        {
+            get => _filteredItems;
+            set
+            {
+                _filteredItems = value;
+                OnPropertyChanged(nameof(FilteredTasks));
+            }
+        }
+
+        private void ApplyFilter()
+        {
+            var filtered = _allTasks.Where(item => !item.IsDeleted).ToList();
+            FilteredTasks = new ObservableCollection<TaskModel>(filtered);
+        }
+
         [RelayCommand]
         private void AddTask()
         {
-            Tasks.Add(
+            _allTasks.Add(
                 new TaskModel()
                 {
-                    Id = Tasks.LastOrDefault()?.Id ?? 0 + 1,
+                    Id = _allTasks.LastOrDefault()?.Id ?? 0 + 1,
                     CreatedAt = DateTime.Now,
                     IsCompleted = false,
                     IsDeleted = false,
                 });
+
+            ApplyFilter();
+        }
+
+        [RelayCommand]
+        private void SoftDeleteTask()
+        {
+            if (SelectedTask != null)
+            {
+                SelectedTask.IsDeleted = true;
+
+                ApplyFilter();
+            }
         }
     }
 }
