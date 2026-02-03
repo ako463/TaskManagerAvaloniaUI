@@ -33,4 +33,14 @@ public class MainViewModelTests
 
         Assert.Equal(unitUnderTest.FilteredTasks?.Where(t => !t.IsDeleted).Count(), 2);
     }
+
+    [Fact]
+    public void MainViewModel_ShouldNotThrowSoftDeleteTask_WhenTaskNotSelected()
+    {
+        var unitUnderTest = new MainViewModel();
+
+        var exception = Record.Exception(() => unitUnderTest.SoftDeleteTaskCommand.Execute(null));
+
+        Assert.Null(exception);
+    }
 }
