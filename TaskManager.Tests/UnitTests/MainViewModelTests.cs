@@ -51,7 +51,6 @@ public class MainViewModelTests
     [Fact]
     public void MainViewModel_ShouldReturnCorrectAmountOfTasks()
     {
-
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
         unitUnderTest.LoadTasksCommand.Execute(null);
 

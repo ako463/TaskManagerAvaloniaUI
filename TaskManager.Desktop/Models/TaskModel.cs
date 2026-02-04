@@ -18,7 +18,7 @@ public partial class TaskModel : ObservableValidator
     private bool _isCompleted;
     
     [ObservableProperty]
-    private DateTime _createdAt;
+    private DateTimeOffset _createdAt;
     
     [ObservableProperty]
     private bool _isDeleted;

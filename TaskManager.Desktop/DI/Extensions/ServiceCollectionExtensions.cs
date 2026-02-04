@@ -8,6 +8,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection)
     {
+        collection.AddSingleton<ITaskRepository, TaskRepository>();
         collection.AddTransient<ITaskService, TaskService>();
         collection.AddTransient<MainViewModel>();
     }

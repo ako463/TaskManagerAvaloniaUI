@@ -52,6 +52,8 @@ namespace TaskManager.Desktop.ViewModels
             var tasks = await _taskService.GetTasks();
             foreach (var task in tasks)
             {
+                task.PropertyChanged += OnTaskChanged;
+
                 _allTasks.Add(task);
             }
 
@@ -59,7 +61,7 @@ namespace TaskManager.Desktop.ViewModels
         }
 
         [RelayCommand]
-        private void AddTask()
+        private async Task AddTask()
         {
             // TODO: убрать Title когда добавлю фокус ячейке для изменения названия задачи
             
@@ -70,34 +72,39 @@ namespace TaskManager.Desktop.ViewModels
             {
                 Id = (_allTasks.LastOrDefault()?.Id ?? 0) + 1,
                 Title = $"{_initialTaskTitle}{nextTitleId}",
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 IsCompleted = false,
                 IsDeleted = false,
             };
 
-            task.PropertyChanged += OnTaskChanged;
+            await _taskService.Add(task);
 
             _allTasks.Add(task);
 
             ApplyFilter();
+
+            task.PropertyChanged += OnTaskChanged;
 
             TaskAdded?.Invoke(task);
         }
 
         private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is TaskModel task && task.HasErrors == false)
+            if (sender is TaskModel task 
+                && task.HasErrors == false
+                && (e.PropertyName == nameof(task.Title)
+                || e.PropertyName == nameof(task.IsCompleted)))
             {
-                // TODO: запись в репу
+                _taskService.Update(task);
             }
         }
 
         [RelayCommand]
-        private void SoftDeleteTask()
+        private async Task SoftDeleteTask()
         {
             if (SelectedTask != null)
             {
-                SelectedTask.IsDeleted = true;
+                SelectedTask.IsDeleted = await _taskService.SoftDelete(SelectedTask);
 
                 ApplyFilter();
             }

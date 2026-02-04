@@ -11,7 +11,7 @@ public class TaskValidationTests
         {
             Id = 1,
             Title = "Задача А",
-            CreatedAt = DateTime.Now,
+            CreatedAt = DateTime.UtcNow,
             IsCompleted = false,
             IsDeleted = false,
         };
