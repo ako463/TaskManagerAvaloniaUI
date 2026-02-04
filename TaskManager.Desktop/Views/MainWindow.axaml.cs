@@ -21,6 +21,9 @@ namespace TaskManager.Desktop.Views
             if (DataContext is MainViewModel viewModel)
             {
                 viewModel.TaskAdded += OnTaskAdded;
+
+                // TODO: вызов команды через behavior
+                viewModel.LoadTasksCommand.Execute(null);
             }
         }
 
