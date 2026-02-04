@@ -84,7 +84,7 @@ namespace TaskManager.Desktop.ViewModels
             // TODO: убрать Title когда добавлю фокус ячейке для изменения названия задачи
             
             string taskTitlePattern = @$"{_initialTaskTitle}(\d+)";
-            int nextTitleId =  _allTasks.Count(t => Regex.IsMatch(t.Title!, taskTitlePattern)) + 1;
+            int nextTitleId =  _allTasks.Count(t => Regex.IsMatch(t.Title ?? "", taskTitlePattern)) + 1;
 
             var task = new TaskModel()
             {
@@ -106,7 +106,10 @@ namespace TaskManager.Desktop.ViewModels
 
         private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)
         {
-            // TODO: запись в репу
+            if (sender is TaskModel task && task.HasErrors == false)
+            {
+                // TODO: запись в репу
+            }
         }
 
         [RelayCommand]
