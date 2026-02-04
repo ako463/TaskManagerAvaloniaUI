@@ -8,7 +8,9 @@
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
         Title="TaskManager.Desktop"
-        Loaded="Window_Loaded">
+        Loaded="Window_Loaded"
+        MinWidth="560"
+        MinHeight="200">
 
     <Window.KeyBindings>
 		<KeyBinding Command="{Binding AddTaskCommand}" Gesture="Enter"/>
