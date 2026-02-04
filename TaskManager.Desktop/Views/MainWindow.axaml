@@ -39,7 +39,7 @@
                                 IsReadOnly="True"/>
         
             <DataGridTextColumn Header="Task title" 
-                                Binding="{Binding Title}" 
+                                Binding="{Binding Title, UpdateSourceTrigger=LostFocus}" 
                                 Width="*"
                                 MinWidth="150"/>
         
@@ -48,9 +48,9 @@
                                 Width="140"
                                 IsReadOnly="True"/>
         
-            <DataGridCheckBoxColumn Header="Completed " 
+            <DataGridCheckBoxColumn Header="Completed" 
                                     Binding="{Binding IsCompleted}" 
-                                    Width="130"/>    
+                                    Width="130"/>
         </DataGrid.Columns>
     </DataGrid>
 

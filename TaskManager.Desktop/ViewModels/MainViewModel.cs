@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -94,11 +95,18 @@ namespace TaskManager.Desktop.ViewModels
                 IsDeleted = false,
             };
 
+            task.PropertyChanged += OnTaskChanged;
+
             _allTasks.Add(task);
 
             ApplyFilter();
 
             TaskAdded?.Invoke(task);
+        }
+
+        private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            // TODO: запись в репу
         }
 
         [RelayCommand]
