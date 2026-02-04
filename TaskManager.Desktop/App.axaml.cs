@@ -4,8 +4,10 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
+using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Desktop.ViewModels;
 using TaskManager.Desktop.Views;
+using TaskManager.Desktop.DI.Extensions;
 
 namespace TaskManager.Desktop
 {
@@ -18,6 +20,13 @@ namespace TaskManager.Desktop
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var collection = new ServiceCollection();
+            collection.AddCommonServices();
+
+            var services = collection.BuildServiceProvider();
+
+            var viewModel = services.GetRequiredService<MainViewModel>();
+
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
@@ -25,7 +34,7 @@ namespace TaskManager.Desktop
                 DisableAvaloniaDataAnnotationValidation();
                 desktop.MainWindow = new MainWindow
                 {
-                    DataContext = new MainViewModel(),
+                    DataContext = viewModel,
                 };
             }
 
