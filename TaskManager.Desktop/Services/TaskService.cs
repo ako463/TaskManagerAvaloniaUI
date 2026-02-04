@@ -21,9 +21,11 @@ public class TaskService : ITaskService
         return taskItems.Select(TaskItemMapper.MapToTaskModel);
     }
 
-    public async Task<bool> Add(TaskModel task)
+    public async Task<TaskModel> Add(TaskModel task)
     {
-        return await _taskRepository.Add(TaskItemMapper.MapFromTaskModel(task));
+        var updatedTaskItem = await _taskRepository.Add(TaskItemMapper.MapFromTaskModel(task));
+
+        return TaskItemMapper.MapToTaskModel(updatedTaskItem);
     }
 
     public async Task<bool> SoftDelete(TaskModel task)

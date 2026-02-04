@@ -8,6 +8,8 @@ using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Desktop.ViewModels;
 using TaskManager.Desktop.Views;
 using TaskManager.Desktop.DI.Extensions;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 
 namespace TaskManager.Desktop
 {
@@ -20,8 +22,13 @@ namespace TaskManager.Desktop
 
         public override void OnFrameworkInitializationCompleted()
         {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: false)
+                .Build();
+
             var collection = new ServiceCollection();
-            collection.AddCommonServices();
+            collection.AddCommonServices(configuration);
 
             var services = collection.BuildServiceProvider();
 

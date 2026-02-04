@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TaskManager.Desktop.Infrastructure;
 using TaskManager.Desktop.Models;
 
@@ -10,44 +10,58 @@ namespace TaskManager.Desktop.Services;
 
 public class TaskRepository : ITaskRepository
 {
-    public async Task<IEnumerable<TaskItem>> GetTaskItems()
+    private readonly ApplicationContext _context;
+
+    public TaskRepository(ApplicationContext context)
     {
-        using ApplicationContext db = new ApplicationContext();
-        
-        var tasks = db.TasksItems.ToList();
- 
-        return await Task.FromResult(tasks);
+        _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<bool> Add(TaskItem taskItem)
+    public async Task<IEnumerable<TaskItem>> GetTaskItems()
     {
-        using ApplicationContext db = new ApplicationContext();
+        return await _context.TasksItems
+            .Where(t => !t.IsDeleted)
+            .ToListAsync();
+    }
 
-        db.TasksItems.Add(taskItem);
-        db.SaveChanges();
+    public async Task<TaskItem> Add(TaskItem taskItem)
+    {
+        if (taskItem == null)
+            throw new ArgumentNullException(nameof(taskItem));
 
-        return await Task.FromResult(true);
+        await _context.TasksItems.AddAsync(taskItem);
+        await _context.SaveChangesAsync();
+
+        return taskItem;
     }
 
     public async Task<bool> SoftDelete(TaskItem taskItem)
     {
-        using ApplicationContext db = new ApplicationContext();
+        var task = await _context.TasksItems
+            .FirstOrDefaultAsync(t => t.Id == taskItem.Id && !t.IsDeleted);
 
-        taskItem.IsDeleted = true;
+        if (task == null)
+            return false;
 
-        db.TasksItems.Update(taskItem);
-        db.SaveChanges();
+        task.IsDeleted = true;
 
-        return await Task.FromResult(true);
+        return await _context.SaveChangesAsync() > 0;
     }
 
     public async Task<bool> Update(TaskItem taskItem)
     {
-        using ApplicationContext db = new ApplicationContext();
+        if (taskItem == null)
+            throw new ArgumentNullException(nameof(taskItem));
 
-        db.TasksItems.Update(taskItem);
-        db.SaveChanges();
+        var existingTask = await _context.TasksItems
+            .FirstOrDefaultAsync(t => t.Id == taskItem.Id && !t.IsDeleted);
 
-        return await Task.FromResult(true);
+        if (existingTask == null)
+            return false;
+
+        // Обновляем только необходимые поля
+        _context.Entry(existingTask).CurrentValues.SetValues(taskItem);
+
+        return await _context.SaveChangesAsync() > 0;
     }
 }

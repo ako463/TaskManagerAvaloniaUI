@@ -70,14 +70,13 @@ namespace TaskManager.Desktop.ViewModels
 
             var task = new TaskModel()
             {
-                Id = (_allTasks.LastOrDefault()?.Id ?? 0) + 1,
                 Title = $"{_initialTaskTitle}{nextTitleId}",
                 CreatedAt = DateTime.UtcNow,
                 IsCompleted = false,
                 IsDeleted = false,
             };
 
-            await _taskService.Add(task);
+            task = await _taskService.Add(task);
 
             _allTasks.Add(task);
 

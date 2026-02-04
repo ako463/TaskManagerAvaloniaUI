@@ -8,7 +8,7 @@ namespace TaskManager.Desktop.Services;
 public interface ITaskService
 {
     Task<IEnumerable<TaskModel>> GetTasks();
-    Task<bool> Add(TaskModel task);
+    Task<TaskModel> Add(TaskModel task);
     Task<bool> SoftDelete(TaskModel task);
     Task<bool> Update(TaskModel task);
 }
