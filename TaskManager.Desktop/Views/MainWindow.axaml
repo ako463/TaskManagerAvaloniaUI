@@ -7,7 +7,8 @@
         x:Class="TaskManager.Desktop.Views.MainWindow"
         x:DataType="vm:MainViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="TaskManager.Desktop">
+        Title="TaskManager.Desktop"
+        Loaded="Window_Loaded">
 
     <Window.KeyBindings>
 		<KeyBinding Command="{Binding AddTaskCommand}" Gesture="Enter"/>
@@ -21,6 +22,7 @@
     </Design.DataContext>
 
     <DataGrid Margin="20" 
+              Name="taskDataGrid"
               ItemsSource="{Binding FilteredTasks}" 
               SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
               AutoGenerateColumns="False" 

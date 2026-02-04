@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using TaskManager.Desktop.Models;
@@ -9,6 +10,11 @@ namespace TaskManager.Desktop.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
+        private readonly string _initialTaskTitle = "Task ";
+
+        public delegate void TaskAddedHandler(object item);
+        public event TaskAddedHandler? TaskAdded;
+
         [ObservableProperty]
         private TaskModel? _selectedTask;
 
@@ -74,16 +80,25 @@ namespace TaskManager.Desktop.ViewModels
         [RelayCommand]
         private void AddTask()
         {
-            _allTasks.Add(
-                new TaskModel()
-                {
-                    Id = _allTasks.LastOrDefault()?.Id ?? 0 + 1,
-                    CreatedAt = DateTime.Now,
-                    IsCompleted = false,
-                    IsDeleted = false,
-                });
+            // TODO: убрать Title когда добавлю фокус ячейке для изменения названия задачи
+            
+            string taskTitlePattern = @$"{_initialTaskTitle}(\d+)";
+            int nextTitleId =  _allTasks.Count(t => Regex.IsMatch(t.Title!, taskTitlePattern)) + 1;
+
+            var task = new TaskModel()
+            {
+                Id = (_allTasks.LastOrDefault()?.Id ?? 0) + 1,
+                Title = $"{_initialTaskTitle}{nextTitleId}",
+                CreatedAt = DateTime.Now,
+                IsCompleted = false,
+                IsDeleted = false,
+            };
+
+            _allTasks.Add(task);
 
             ApplyFilter();
+
+            TaskAdded?.Invoke(task);
         }
 
         [RelayCommand]

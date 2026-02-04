@@ -23,6 +23,20 @@ public class MainViewModelTests
     }
 
     [Fact]
+    public void MainViewModel_ShouldGiveNewTasksConsistentTitles()
+    {
+        var unitUnderTest = new MainViewModel();
+
+        var titles = new string[] { "Task 1", "Task 2", "Task 3"};
+
+        unitUnderTest.AddTaskCommand.Execute(null);
+        unitUnderTest.AddTaskCommand.Execute(null);
+        unitUnderTest.AddTaskCommand.Execute(null);
+
+        Assert.Equal(unitUnderTest.FilteredTasks?.Count(t => titles.Contains(t.Title)), 3);
+    }
+
+    [Fact]
     public void MainViewModel_ShouldSuccessfullySoftDeleteTask()
     {
         var unitUnderTest = new MainViewModel();
