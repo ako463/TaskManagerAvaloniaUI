@@ -11,8 +11,8 @@ using TaskManager.Desktop.Infrastructure;
 
 namespace TaskManager.Desktop.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    [Migration("20260204140704_InitialCreate")]
+    [DbContext(typeof(TaskItemContext))]
+    [Migration("20260205013254_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -35,7 +35,10 @@ namespace TaskManager.Desktop.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Index")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Index"));
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");

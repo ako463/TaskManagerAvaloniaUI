@@ -10,8 +10,8 @@ using TaskManager.Desktop.Infrastructure;
 
 namespace TaskManager.Desktop.Migrations
 {
-    [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(TaskItemContext))]
+    partial class TaskItemContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -32,7 +32,10 @@ namespace TaskManager.Desktop.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Index")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Index"));
 
                     b.Property<bool>("IsCompleted")
                         .HasColumnType("boolean");
