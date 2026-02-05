@@ -6,7 +6,7 @@ namespace TaskManager.Desktop.Models;
 public partial class TaskModel : ObservableValidator
 {
     [ObservableProperty]
-    private int _id;
+    private int _index;
 
     [ObservableProperty]
     [NotifyDataErrorInfo]

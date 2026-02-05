@@ -36,7 +36,7 @@
 
         <DataGrid.Columns>
             <DataGridTextColumn Header="ID" 
-                                Binding="{Binding Id}" 
+                                Binding="{Binding Index}" 
                                 Width="60"
                                 IsReadOnly="True"/>
         

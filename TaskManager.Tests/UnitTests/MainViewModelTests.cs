@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Moq;
 using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
@@ -17,28 +18,28 @@ public class MainViewModelTests
         {
             new TaskModel()
             {
-                Id = 1,
+                Index = 1,
                 Title = "Задача А",
                 IsCompleted = false,
                 IsDeleted = false,
             },
             new TaskModel()
             {
-                Id = 2,
+                Index = 2,
                 Title = "Задача Б",
                 IsCompleted = true,
                 IsDeleted = false,
             },
             new TaskModel()
             {
-                Id = 3,
+                Index = 3,
                 Title = "Задача В",
                 IsCompleted = false,
                 IsDeleted = true,
             },
             new TaskModel()
             {
-                Id = 4,
+                Index = 4,
                 Title = "Задача Г",
                 IsCompleted = false,
                 IsDeleted = false,
@@ -52,6 +53,7 @@ public class MainViewModelTests
     public void MainViewModel_ShouldReturnCorrectAmountOfTasks()
     {
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
+
         unitUnderTest.LoadTasksCommand.Execute(null);
 
         Assert.Equal(unitUnderTest.FilteredTasks?.Count, 3);
@@ -60,6 +62,10 @@ public class MainViewModelTests
     [Fact]
     public void MainViewModel_ShouldSuccessfullyAddNewTask()
     {
+        _taskServiceMock
+            .Setup(x => x.Add(It.IsAny<TaskModel>()))
+            .Returns(Task.FromResult(new TaskModel()));
+
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
         unitUnderTest.LoadTasksCommand.Execute(null);
 
@@ -71,9 +77,9 @@ public class MainViewModelTests
     [Fact]
     public void MainViewModel_ShouldGiveNewTasksConsistentTitles()
     {
-        _taskServiceMock = new Mock<ITaskService>();
+        var taskServiceStub = new TaskServiceStub();
 
-        var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
+        var unitUnderTest = new MainViewModel(taskServiceStub);
 
         var titles = new string[] { "Task 1", "Task 2", "Task 3"};
 
@@ -81,12 +87,16 @@ public class MainViewModelTests
         unitUnderTest.AddTaskCommand.Execute(null);
         unitUnderTest.AddTaskCommand.Execute(null);
 
-        Assert.Equal(unitUnderTest.FilteredTasks?.Count(t => titles.Contains(t.Title)), 3);
+        Assert.Equal(3, unitUnderTest.FilteredTasks?.Count(t => titles.Contains(t.Title)));
     }
 
     [Fact]
     public void MainViewModel_ShouldSuccessfullySoftDeleteTask()
     {
+        _taskServiceMock
+            .Setup(x => x.SoftDelete(It.IsAny<TaskModel>()))
+            .Returns(Task.FromResult(true));
+
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
         unitUnderTest.LoadTasksCommand.Execute(null);
 
@@ -94,7 +104,7 @@ public class MainViewModelTests
 
         unitUnderTest.SoftDeleteTaskCommand.Execute(null);
 
-        Assert.Equal(unitUnderTest.FilteredTasks?.Where(t => !t.IsDeleted).Count(), 2);
+        Assert.Equal(2, unitUnderTest.FilteredTasks?.Where(t => !t.IsDeleted).Count());
     }
 
     [Fact]

@@ -9,7 +9,7 @@ public class TaskItemMapperTests
     {
         var taskModel = new TaskModel()
         {
-            Id = 17,
+            Index = 17,
             Title = "Task ABC",
             CreatedAt = new DateTime(2026, 02, 04, 16, 20, 11),
             IsCompleted = true,
@@ -18,7 +18,7 @@ public class TaskItemMapperTests
 
         var taskItem = TaskItemMapper.MapFromTaskModel(taskModel);
 
-        Assert.Equal(taskModel.Id, taskItem.Id);
+        Assert.Equal(taskModel.Index, taskItem.Index);
         Assert.Equal(taskModel.Title, taskItem.Title);
         Assert.Equal(taskModel.CreatedAt, taskItem.CreatedAt);
         Assert.Equal(taskModel.IsCompleted, taskItem.IsCompleted);
@@ -30,7 +30,7 @@ public class TaskItemMapperTests
     {
         var taskItem = new TaskItem()
         {
-            Id = 32,
+            Index = 32,
             Title = "Task DEF",
             CreatedAt = new DateTime(2026, 02, 04, 16, 20, 11),
             IsCompleted = true,
@@ -39,7 +39,7 @@ public class TaskItemMapperTests
 
         var taskModel = TaskItemMapper.MapToTaskModel(taskItem);
 
-        Assert.Equal(taskItem.Id, taskModel.Id);
+        Assert.Equal(taskItem.Index, taskModel.Index);
         Assert.Equal(taskItem.Title, taskModel.Title);
         Assert.Equal(taskItem.CreatedAt, taskModel.CreatedAt);
         Assert.Equal(taskItem.IsCompleted, taskModel.IsCompleted);

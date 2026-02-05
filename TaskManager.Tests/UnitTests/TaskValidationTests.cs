@@ -9,7 +9,7 @@ public class TaskValidationTests
     {
         var unitUnderTest = new TaskModel()
         {
-            Id = 1,
+            Index = 1,
             Title = "Задача А",
             CreatedAt = DateTime.UtcNow,
             IsCompleted = false,
