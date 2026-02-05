@@ -5,16 +5,15 @@ using TaskManager.Desktop.Models;
 
 namespace TaskManager.Desktop.Infrastructure;
 
-public class ApplicationContext : DbContext
+public class TaskItemContext : DbContext
 {
     public DbSet<TaskItem> TasksItems { get; set; }
 
-    public ApplicationContext(DbContextOptions<ApplicationContext> options) 
-        : base(options)
+    public TaskItemContext(DbContextOptions<TaskItemContext> options) : base(options)
     {
     }
 
-    public ApplicationContext()
+    public TaskItemContext()
     {
     }
 

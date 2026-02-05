@@ -11,7 +11,7 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection, IConfiguration configuration)
     {
-        collection.AddDbContext<ApplicationContext>(options => 
+        collection.AddDbContext<TaskItemContext>(options => 
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
 
         collection.AddScoped<ITaskRepository, TaskRepository>();

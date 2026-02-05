@@ -10,9 +10,9 @@ namespace TaskManager.Desktop.Services;
 
 public class TaskRepository : ITaskRepository
 {
-    private readonly ApplicationContext _context;
+    private readonly TaskItemContext _context;
 
-    public TaskRepository(ApplicationContext context)
+    public TaskRepository(TaskItemContext context)
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
