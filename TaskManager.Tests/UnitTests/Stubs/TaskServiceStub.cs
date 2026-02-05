@@ -29,12 +29,12 @@ public class TaskServiceStub : ITaskService
             ]);
     }
 
-    public async Task<bool> SoftDelete(TaskModel task)
+    public Task<bool> SoftDelete(TaskModel task)
     {
         throw new NotImplementedException();
     }
 
-    public async Task<bool> Update(TaskModel task)
+    public Task<bool> Update(TaskModel task)
     {
         throw new NotImplementedException();
     }

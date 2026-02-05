@@ -11,7 +11,9 @@ public class TaskItemContextStub : TaskItemContext
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) 
-    { 
-        optionsBuilder.UseInMemoryDatabase("tasks"); 
+    {
+        var dbName = $"tasks_{Guid.NewGuid()}";
+
+        optionsBuilder.UseInMemoryDatabase(dbName); 
     }
 }
