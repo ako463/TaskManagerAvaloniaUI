@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using CommunityToolkit.Mvvm.ComponentModel;
+using TaskManager.Desktop.Domain;
 namespace TaskManager.Desktop.Models;
 
 public partial class TaskModel : ObservableValidator

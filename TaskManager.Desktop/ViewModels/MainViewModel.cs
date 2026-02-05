@@ -63,12 +63,10 @@ namespace TaskManager.Desktop.ViewModels
         [RelayCommand]
         private async Task AddTask()
         {
-            // TODO: убрать Title когда добавлю фокус ячейке для изменения названия задачи
-            
             string taskTitlePattern = @$"{_initialTaskTitle}(\d+)";
             int nextTitleId =  _allTasks.Count(t => Regex.IsMatch(t.Title ?? "", taskTitlePattern)) + 1;
 
-            var task = new TaskModel()
+            var newTask = new TaskModel()
             {
                 Title = $"{_initialTaskTitle}{nextTitleId}",
                 CreatedAt = DateTimeOffset.UtcNow,
@@ -76,15 +74,15 @@ namespace TaskManager.Desktop.ViewModels
                 IsDeleted = false,
             };
 
-            task = await _taskService.Add(task);
+            newTask = await _taskService.Add(newTask);
 
-            _allTasks.Add(task);
+            _allTasks.Add(newTask);
 
             ApplyFilter();
 
-            task.PropertyChanged += OnTaskChanged;
+            newTask.PropertyChanged += OnTaskChanged;
 
-            TaskAdded?.Invoke(task);
+            TaskAdded?.Invoke(newTask);
         }
 
         private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)

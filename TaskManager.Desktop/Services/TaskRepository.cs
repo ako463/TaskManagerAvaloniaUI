@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Infrastructure;
-using TaskManager.Desktop.Models;
 
 namespace TaskManager.Desktop.Services;
 

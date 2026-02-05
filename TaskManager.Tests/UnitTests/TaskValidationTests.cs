@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Models;
 
 namespace TaskManager.Tests.UnitTests;

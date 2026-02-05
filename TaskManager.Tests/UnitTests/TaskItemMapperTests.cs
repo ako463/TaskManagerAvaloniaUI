@@ -1,4 +1,5 @@
-﻿using TaskManager.Desktop.Models;
+﻿using TaskManager.Desktop.Domain;
+using TaskManager.Desktop.Models;
 
 namespace TaskManager.Tests.UnitTests;
 

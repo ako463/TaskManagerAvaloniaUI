@@ -1,4 +1,6 @@
-﻿namespace TaskManager.Desktop.Models;
+﻿using TaskManager.Desktop.Domain;
+
+namespace TaskManager.Desktop.Models;
 
 public static class TaskItemMapper
 {

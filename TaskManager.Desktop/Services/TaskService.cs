@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Models;
 
 namespace TaskManager.Desktop.Services;

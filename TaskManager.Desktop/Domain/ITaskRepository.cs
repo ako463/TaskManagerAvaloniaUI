@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using TaskManager.Desktop.Models;
 
-namespace TaskManager.Desktop.Services;
+namespace TaskManager.Desktop.Domain;
 
 public interface ITaskRepository
 {

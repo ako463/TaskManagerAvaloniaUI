@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Infrastructure;
-using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 using TaskManager.Tests.UnitTests.Stubs;
 

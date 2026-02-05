@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Infrastructure;
 using TaskManager.Desktop.Services;
 using TaskManager.Desktop.ViewModels;
