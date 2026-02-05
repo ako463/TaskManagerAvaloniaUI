@@ -1,7 +1,6 @@
 using System.Linq;
 using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
 using Avalonia.Markup.Xaml;
 using Microsoft.Extensions.DependencyInjection;
@@ -10,11 +9,18 @@ using TaskManager.Desktop.Views;
 using TaskManager.Desktop.DI.Extensions;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Avalonia.Threading;
+using System.Threading.Tasks;
+using System;
+using Avalonia.Controls.Notifications;
+using Avalonia.Controls;
 
 namespace TaskManager.Desktop
 {
     public partial class App : Application
     {
+        private WindowNotificationManager? _manager;
+
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -30,6 +36,8 @@ namespace TaskManager.Desktop
             var collection = new ServiceCollection();
             collection.AddCommonServices(configuration);
 
+            SetupGlobalExceptionHandlers();
+
             var services = collection.BuildServiceProvider();
 
             var viewModel = services.GetRequiredService<MainViewModel>();
@@ -43,6 +51,9 @@ namespace TaskManager.Desktop
                 {
                     DataContext = viewModel,
                 };
+
+                var topLevel = TopLevel.GetTopLevel(desktop.MainWindow);
+                _manager = new WindowNotificationManager(topLevel) { MaxItems = 3 };
             }
 
             base.OnFrameworkInitializationCompleted();
@@ -59,6 +70,52 @@ namespace TaskManager.Desktop
             {
                 BindingPlugins.DataValidators.Remove(plugin);
             }
+        }
+
+        private void SetupGlobalExceptionHandlers()
+        {
+            AppDomain.CurrentDomain.UnhandledException += OnAppDomainUnhandledException;
+            Dispatcher.UIThread.UnhandledException += OnDispatcherUnhandledException;
+            TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        }
+
+        private void OnAppDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = (Exception)e.ExceptionObject;
+
+            LogException(exception, "AppDomain");
+            ShowErrorNotification(exception);
+        }
+
+        private void OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
+        {
+            LogException(e.Exception, "UI Thread");
+            ShowErrorNotification(e.Exception);
+
+            e.Handled = true;
+        }
+
+        private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+        {
+            LogException(e.Exception, "TaskScheduler");
+            ShowErrorNotification(e.Exception);
+
+            e.SetObserved();
+        }
+
+        private void ShowErrorNotification(Exception ex)
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var notification = new Notification("Error", ex.Message, NotificationType.Error);
+                
+                _manager?.Show(notification);
+            });
+        }
+
+        private void LogException(Exception exception, string source)
+        {
+            // TODO כמדדונ
         }
     }
 }
