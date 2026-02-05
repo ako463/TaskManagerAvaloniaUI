@@ -14,19 +14,19 @@ using System.Threading.Tasks;
 using System;
 using Avalonia.Controls.Notifications;
 using Avalonia.Controls;
+using Microsoft.Extensions.Logging;
+using Castle.Core.Configuration;
 
 namespace TaskManager.Desktop
 {
     public partial class App : Application
     {
         private WindowNotificationManager? _manager;
+        private ServiceProvider? _services;
+
+        public ILogger<App>? Logger { get; private set; }
 
         public override void Initialize()
-        {
-            AvaloniaXamlLoader.Load(this);
-        }
-
-        public override void OnFrameworkInitializationCompleted()
         {
             var configuration = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -38,9 +38,17 @@ namespace TaskManager.Desktop
 
             SetupGlobalExceptionHandlers();
 
-            var services = collection.BuildServiceProvider();
+            _services = collection.BuildServiceProvider();
 
-            var viewModel = services.GetRequiredService<MainViewModel>();
+            Logger = _services.GetRequiredService<ILogger<App>>();
+            Logger.LogInformation("Application starting...");
+
+            AvaloniaXamlLoader.Load(this);
+        }
+
+        public override void OnFrameworkInitializationCompleted()
+        {
+            var viewModel = _services?.GetRequiredService<MainViewModel>();
 
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
@@ -115,7 +123,7 @@ namespace TaskManager.Desktop
 
         private void LogException(Exception exception, string source)
         {
-            // TODO כמדדונ
+            Logger?.LogError(exception, source);
         }
     }
 }
