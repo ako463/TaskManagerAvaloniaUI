@@ -1,8 +1,8 @@
-using System.Collections.Generic;
 using Moq;
 using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 using TaskManager.Desktop.ViewModels;
+using TaskManager.Tests.UnitTests.Stubs;
 
 namespace TaskManager.Tests.UnitTests;
 

@@ -28,7 +28,7 @@ public class TaskRepositoryTests
 
         var unitUnderTest = new TaskRepository(_context);
 
-        var updatedTaskItem = await unitUnderTest.Add(taskItem);
+        var updatedTaskItem = await unitUnderTest.AddAsync(taskItem);
 
         Assert.Equal(taskItem.Title, updatedTaskItem.Title);
         Assert.NotNull(updatedTaskItem.Id.ToString());
@@ -44,7 +44,7 @@ public class TaskRepositoryTests
 
         var unitUnderTest = new TaskRepository(_context);
 
-        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.Add(taskItem));
+        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
 
         Assert.NotNull(exception);
         Assert.Equal(TaskItem.EmptyTitleError, exception.Message);
@@ -62,7 +62,7 @@ public class TaskRepositoryTests
 
         var unitUnderTest = new TaskRepository(_context);
 
-        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.Add(taskItem));
+        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
 
         Assert.NotNull(exception);
         Assert.Equal(TaskItem.LongTitleError, exception.Message);

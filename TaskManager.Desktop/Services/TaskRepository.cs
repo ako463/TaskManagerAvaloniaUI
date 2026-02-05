@@ -17,14 +17,14 @@ public class TaskRepository : ITaskRepository
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
 
-    public async Task<IEnumerable<TaskItem>> GetTaskItems()
+    public async Task<IEnumerable<TaskItem>> GetTaskItemsAsync()
     {
         return await _context.TasksItems
             .Where(t => !t.IsDeleted)
             .ToListAsync();
     }
 
-    public async Task<TaskItem> Add(TaskItem taskItem)
+    public async Task<TaskItem> AddAsync(TaskItem taskItem)
     {
         if (taskItem == null)
             throw new ArgumentNullException(nameof(taskItem));
@@ -35,7 +35,7 @@ public class TaskRepository : ITaskRepository
         return taskItem;
     }
 
-    public async Task<bool> SoftDelete(TaskItem taskItem)
+    public async Task<bool> SoftDeleteAsync(TaskItem taskItem)
     {
         var task = await _context.TasksItems
             .FirstOrDefaultAsync(t => t.Id == taskItem.Id && !t.IsDeleted);
@@ -48,7 +48,7 @@ public class TaskRepository : ITaskRepository
         return await _context.SaveChangesAsync() > 0;
     }
 
-    public async Task<bool> Update(TaskItem taskItem)
+    public async Task<bool> UpdateAsync(TaskItem taskItem)
     {
         if (taskItem == null)
             throw new ArgumentNullException(nameof(taskItem));

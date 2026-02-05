@@ -10,8 +10,8 @@ public partial class TaskModel : ObservableValidator
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
-    [Required(AllowEmptyStrings = false, ErrorMessage = "Input task title")]
-    [Length(1, 100, ErrorMessage = "At least 1 and maximum 100 chars")]
+    [Required(AllowEmptyStrings = false, ErrorMessage = TaskItem.EmptyTitleError)]
+    [Length(1, 100, ErrorMessage = TaskItem.LongTitleError)]
     private string? _title;
 
     [ObservableProperty]

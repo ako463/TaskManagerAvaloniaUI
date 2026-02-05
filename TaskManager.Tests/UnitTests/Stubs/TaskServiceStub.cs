@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TaskManager.Desktop.Models;
+﻿using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 
-namespace TaskManager.Tests.UnitTests;
+namespace TaskManager.Tests.UnitTests.Stubs;
 
 public class TaskServiceStub : ITaskService
 {

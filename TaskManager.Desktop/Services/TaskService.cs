@@ -16,25 +16,25 @@ public class TaskService : ITaskService
 
     public async Task<IEnumerable<TaskModel>> GetTasks()
     {
-        var taskItems = await _taskRepository.GetTaskItems();
+        var taskItems = await _taskRepository.GetTaskItemsAsync();
 
         return taskItems.Select(TaskItemMapper.MapToTaskModel);
     }
 
     public async Task<TaskModel> Add(TaskModel task)
     {
-        var updatedTaskItem = await _taskRepository.Add(TaskItemMapper.MapFromTaskModel(task));
+        var updatedTaskItem = await _taskRepository.AddAsync(TaskItemMapper.MapFromTaskModel(task));
 
         return TaskItemMapper.MapToTaskModel(updatedTaskItem);
     }
 
     public async Task<bool> SoftDelete(TaskModel task)
     {   
-        return await _taskRepository.SoftDelete(TaskItemMapper.MapFromTaskModel(task));
+        return await _taskRepository.SoftDeleteAsync(TaskItemMapper.MapFromTaskModel(task));
     }
 
     public async Task<bool> Update(TaskModel task)
     {
-        return await _taskRepository.Update(TaskItemMapper.MapFromTaskModel(task));
+        return await _taskRepository.UpdateAsync(TaskItemMapper.MapFromTaskModel(task));
     }
 }

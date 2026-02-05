@@ -6,8 +6,8 @@ namespace TaskManager.Desktop.Services;
 
 public interface ITaskRepository
 {
-    Task<IEnumerable<TaskItem>> GetTaskItems();
-    Task<TaskItem> Add(TaskItem taskItem);
-    Task<bool> SoftDelete(TaskItem taskItem);
-    Task<bool> Update(TaskItem taskItem);
+    Task<IEnumerable<TaskItem>> GetTaskItemsAsync();
+    Task<TaskItem> AddAsync(TaskItem taskItem);
+    Task<bool> SoftDeleteAsync(TaskItem taskItem);
+    Task<bool> UpdateAsync(TaskItem taskItem);
 }
