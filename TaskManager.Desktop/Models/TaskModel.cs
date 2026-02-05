@@ -6,6 +6,9 @@ namespace TaskManager.Desktop.Models;
 public partial class TaskModel : ObservableValidator
 {
     [ObservableProperty]
+    private Guid _id;
+
+    [ObservableProperty]
     private int _index;
 
     [ObservableProperty]
