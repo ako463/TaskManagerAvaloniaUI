@@ -67,4 +67,62 @@ public class TaskRepositoryTests
         Assert.NotNull(exception);
         Assert.Equal(TaskItem.LongTitleError, exception.Message);
     }
+
+    [Fact]
+    public async Task TaskRepository_ShouldSoftDeleteTask_Success()
+    {
+        var tasks = new List<TaskItem>
+        {
+            new TaskItem() { Index = 1, Title = "Task 1" },
+            new TaskItem() { Index = 2, Title = "Task 2" },
+            new TaskItem() { Index = 3, Title = "Task 3" }
+        };
+
+        await _context.TasksItems.AddRangeAsync(tasks);
+        await _context.SaveChangesAsync();
+
+        var taskItemToSoftDelete = _context.TasksItems.Last();
+
+        var unitUnderTest = new TaskRepository(_context);
+
+        bool succeed = await unitUnderTest.SoftDeleteAsync(taskItemToSoftDelete);
+
+        Assert.True(succeed);
+        Assert.Equal(3, _context.TasksItems.Count());
+        Assert.True(taskItemToSoftDelete.IsDeleted);
+    }
+
+    [Fact]
+    public async Task TaskRepository_ShouldUpdateTask_Success()
+    {
+        string newTitle = "Updated task title";
+        
+        var tasks = new List<TaskItem>
+        {
+            new TaskItem() { Index = 1, Title = "Task 1" },
+            new TaskItem() { Index = 2, Title = "Task 2" },
+            new TaskItem() { Index = 3, Title = "Task 3" }
+        };
+        
+        await _context.TasksItems.AddRangeAsync(tasks);
+        await _context.SaveChangesAsync();
+
+        var affectedTaskItem = _context.TasksItems.Last();
+
+        var taskItemToUpdate = new TaskItem()
+        {
+            Id = affectedTaskItem.Id,
+            Title = newTitle,
+            IsCompleted = true
+        };
+
+        var unitUnderTest = new TaskRepository(_context);
+
+        bool succeed = await unitUnderTest.UpdateAsync(taskItemToUpdate);
+
+        Assert.True(succeed);
+        Assert.Equal(3, _context.TasksItems.Count());
+        Assert.Equal(newTitle, affectedTaskItem.Title);
+        Assert.True(affectedTaskItem.IsCompleted);
+    }
 }
