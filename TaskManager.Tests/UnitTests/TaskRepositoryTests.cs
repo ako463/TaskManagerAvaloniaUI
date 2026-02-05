@@ -46,8 +46,11 @@ public class TaskRepositoryTests
 
         var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
 
+        var savedTasks = _context.TasksItems;
+
         Assert.NotNull(exception);
         Assert.Equal(TaskItem.EmptyTitleError, exception.Message);
+        Assert.Empty(savedTasks);
     }
 
     [Fact]
@@ -64,8 +67,11 @@ public class TaskRepositoryTests
 
         var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
 
+        var savedTasks = _context.TasksItems;
+
         Assert.NotNull(exception);
         Assert.Equal(TaskItem.LongTitleError, exception.Message);
+        Assert.Empty(savedTasks);
     }
 
     [Fact]
