@@ -14,7 +14,7 @@ public class TaskValidationTests
         {
             Index = 1,
             Title = "Task A",
-            CreatedAt = DateTime.UtcNow,
+            CreatedAt = DateTimeOffset.UtcNow,
             IsCompleted = false,
             IsDeleted = false,
         };

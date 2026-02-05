@@ -71,7 +71,7 @@ namespace TaskManager.Desktop.ViewModels
             var task = new TaskModel()
             {
                 Title = $"{_initialTaskTitle}{nextTitleId}",
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTimeOffset.UtcNow,
                 IsCompleted = false,
                 IsDeleted = false,
             };
