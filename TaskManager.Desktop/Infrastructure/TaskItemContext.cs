@@ -40,12 +40,18 @@ public class TaskItemContext : DbContext
         // Этот метод вызывается только если контекст создается без DI
         if (!optionsBuilder.IsConfigured)
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json")
-                .Build();
+            var configuration = ConfigurationProvider.Provide();
 
-            optionsBuilder.UseNpgsql(configuration.GetConnectionString("DefaultConnection"));
+            var usePostgres = configuration!.GetValue<bool>("Database:UsePostgres");
+
+            if (usePostgres)
+            {
+                optionsBuilder.UseNpgsql(configuration!.GetValue<string>("Database:ConnectionStrings:Postgres"));
+            }
+            else
+            {
+                optionsBuilder.UseSqlite(configuration!.GetValue<string>("Database:ConnectionStrings:Sqlite"));
+            }
         }
     }
 

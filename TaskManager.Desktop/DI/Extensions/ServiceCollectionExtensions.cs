@@ -14,8 +14,18 @@ public static class ServiceCollectionExtensions
 {
     public static void AddCommonServices(this IServiceCollection collection, IConfiguration configuration)
     {
-        collection.AddDbContext<TaskItemContext>(options => 
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+        var usePostgres = configuration.GetValue<bool>("Database:UsePostgres");
+
+        if (usePostgres)
+        {
+            collection.AddDbContext<TaskItemContext>(options =>
+                options.UseNpgsql(configuration.GetValue<string>("Database:ConnectionStrings:Postgres")));
+        }
+        else
+        {
+            collection.AddDbContext<TaskItemContext>(options =>
+                options.UseSqlite(configuration.GetValue<string>("Database:ConnectionStrings:Sqlite")));
+        }
 
         collection.AddScoped<ITaskRepository, TaskRepository>();
         collection.AddTransient<ITaskService, TaskService>();

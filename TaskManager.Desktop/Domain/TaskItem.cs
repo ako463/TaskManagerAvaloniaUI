@@ -11,9 +11,6 @@ public class TaskItem : IValidatableObject
 
     [Key]
     public Guid Id { get; set; }
-
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public int Index { get; set; }
     public required string Title { get; set; }
     public bool IsCompleted { get; set; }
     public DateTimeOffset CreatedAt { get; set; }

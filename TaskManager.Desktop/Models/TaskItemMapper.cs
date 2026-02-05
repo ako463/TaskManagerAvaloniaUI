@@ -9,7 +9,6 @@ public static class TaskItemMapper
         return new TaskModel()
         {
             Id = taskItem.Id,
-            Index = taskItem.Index,
             CreatedAt = taskItem.CreatedAt,
             IsCompleted = taskItem.IsCompleted,
             IsDeleted = taskItem.IsDeleted,
@@ -22,7 +21,6 @@ public static class TaskItemMapper
         return new TaskItem()
         {
             Id = taskModel.Id,
-            Index = taskModel.Index,
             CreatedAt = taskModel.CreatedAt,
             IsCompleted = taskModel.IsCompleted,
             IsDeleted = taskModel.IsDeleted,

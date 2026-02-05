@@ -79,9 +79,9 @@ public class TaskRepositoryTests
     {
         var tasks = new List<TaskItem>
         {
-            new TaskItem() { Index = 1, Title = "Task 1" },
-            new TaskItem() { Index = 2, Title = "Task 2" },
-            new TaskItem() { Index = 3, Title = "Task 3" }
+            new TaskItem() { Title = "Task 1" },
+            new TaskItem() { Title = "Task 2" },
+            new TaskItem() { Title = "Task 3" }
         };
 
         await _context.TasksItems.AddRangeAsync(tasks);
@@ -105,9 +105,9 @@ public class TaskRepositoryTests
         
         var tasks = new List<TaskItem>
         {
-            new TaskItem() { Index = 1, Title = "Task 1" },
-            new TaskItem() { Index = 2, Title = "Task 2" },
-            new TaskItem() { Index = 3, Title = "Task 3" }
+            new TaskItem() { Title = "Task 1" },
+            new TaskItem() { Title = "Task 2" },
+            new TaskItem() { Title = "Task 3" }
         };
         
         await _context.TasksItems.AddRangeAsync(tasks);

@@ -28,13 +28,10 @@ namespace TaskManager.Desktop
 
         public override void Initialize()
         {
-            var configuration = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: false)
-                .Build();
+            var configuration = Infrastructure.ConfigurationProvider.Provide();
 
             var collection = new ServiceCollection();
-            collection.AddCommonServices(configuration);
+            collection.AddCommonServices(configuration!);
 
             SetupGlobalExceptionHandlers();
 

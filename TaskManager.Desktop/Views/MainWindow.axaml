@@ -34,12 +34,7 @@
               BorderThickness="1" 
               BorderBrush="Gray">
 
-        <DataGrid.Columns>
-            <DataGridTextColumn Header="ID" 
-                                Binding="{Binding Index}" 
-                                Width="60"
-                                IsReadOnly="True"/>
-        
+        <DataGrid.Columns>        
             <DataGridTextColumn Header="Task title" 
                                 Binding="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
                                 Width="*"
