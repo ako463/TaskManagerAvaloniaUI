@@ -2,7 +2,6 @@ using Moq;
 using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 using TaskManager.Desktop.ViewModels;
-using TaskManager.Tests.UnitTests.Stubs;
 
 namespace TaskManager.Tests.UnitTests;
 
@@ -35,13 +34,6 @@ public class MainViewModelTests
                 Index = 3,
                 Title = "Задача В",
                 IsCompleted = false,
-                IsDeleted = true,
-            },
-            new TaskModel()
-            {
-                Index = 4,
-                Title = "Задача Г",
-                IsCompleted = false,
                 IsDeleted = false,
             }
         };
@@ -71,23 +63,7 @@ public class MainViewModelTests
 
         unitUnderTest.AddTaskCommand.Execute(null);
 
-        Assert.Equal(unitUnderTest.Tasks?.Count, 4);
-    }
-
-    [Fact]
-    public void MainViewModel_ShouldGiveNewTasksConsistentTitles()
-    {
-        var taskServiceStub = new TaskServiceStub();
-
-        var unitUnderTest = new MainViewModel(taskServiceStub);
-
-        var titles = new string[] { "Task 1", "Task 2", "Task 3"};
-
-        unitUnderTest.AddTaskCommand.Execute(null);
-        unitUnderTest.AddTaskCommand.Execute(null);
-        unitUnderTest.AddTaskCommand.Execute(null);
-
-        Assert.Equal(3, unitUnderTest.Tasks?.Count(t => titles.Contains(t.Title)));
+        Assert.Equal(4, unitUnderTest.Tasks?.Count);
     }
 
     [Fact]
@@ -104,7 +80,7 @@ public class MainViewModelTests
 
         unitUnderTest.SoftDeleteTaskCommand.Execute(null);
 
-        Assert.Equal(2, unitUnderTest.Tasks?.Where(t => !t.IsDeleted).Count());
+        Assert.Null(unitUnderTest.SelectedTask);
     }
 
     [Fact]

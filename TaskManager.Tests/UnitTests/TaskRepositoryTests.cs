@@ -27,6 +27,38 @@ public class TaskRepositoryTests
     }
 
     [Fact]
+    public async Task TaskRepository_ShouldReturnAllTasks()
+    {
+        _tasks[0].MarkAsDelete();
+        _tasks[2].MarkAsDelete();
+
+        await _context.TasksItems.AddRangeAsync(_tasks);
+        await _context.SaveChangesAsync();
+
+        var unitUnderTest = new TaskRepository(_context);
+
+        var tasks = await unitUnderTest.GetAllTaskItemsAsync();
+
+        Assert.Equal(3, tasks?.Count());
+    }
+
+    [Fact]
+    public async Task TaskRepository_ShouldReturnOnlyAvailableTasks()
+    {
+        _tasks[0].MarkAsDelete();
+        _tasks[2].MarkAsDelete();
+
+        await _context.TasksItems.AddRangeAsync(_tasks);
+        await _context.SaveChangesAsync();
+
+        var unitUnderTest = new TaskRepository(_context);
+
+        var tasks = await unitUnderTest.GetTaskItemsAsync();
+
+        Assert.Equal(1, tasks?.Count());
+    }
+
+    [Fact]
     public async Task TaskRepository_ShouldAddNewTask()
     {
         string title = "My task";

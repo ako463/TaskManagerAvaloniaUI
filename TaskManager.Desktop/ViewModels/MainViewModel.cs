@@ -62,6 +62,8 @@ namespace TaskManager.Desktop.ViewModels
             {
                 if (await _taskService.SoftDelete(SelectedTask.Id))
                 {
+                    SelectedTask = null;
+
                     foreach (var task in _tasks)
                     {
                         task.PropertyChanged -= OnTaskChanged;
