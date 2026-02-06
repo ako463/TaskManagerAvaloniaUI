@@ -11,7 +11,7 @@ using TaskManager.Desktop.Infrastructure;
 namespace TaskManager.Desktop.Migrations
 {
     [DbContext(typeof(TaskItemContext))]
-    [Migration("20260205124508_InitialCreate")]
+    [Migration("20260206042730_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -36,7 +36,6 @@ namespace TaskManager.Desktop.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
