@@ -1,0 +1,53 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:TaskManager.Desktop.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="TaskManager.Desktop.Views.MainWindow"
+        x:DataType="vm:MainViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="SimpleTaskManager"
+        Loaded="Window_Loaded"
+        MinWidth="560"
+        MinHeight="200">
+
+    <Window.KeyBindings>
+		<KeyBinding Command="{Binding AddTaskCommand}" Gesture="Enter"/>
+        <KeyBinding Command="{Binding SoftDeleteTaskCommand}" Gesture="Delete"/>
+    </Window.KeyBindings>
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainViewModel/>
+    </Design.DataContext>
+
+    <DataGrid Margin="20" 
+              Name="taskDataGrid"
+              ItemsSource="{Binding Tasks}" 
+              SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
+              AutoGenerateColumns="False" 
+              IsReadOnly="False" 
+              GridLinesVisibility="All"
+              SelectionMode="Single"
+              BorderThickness="1" 
+              BorderBrush="Gray">
+
+        <DataGrid.Columns>        
+            <DataGridTextColumn Header="Task title" 
+                                Binding="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                Width="*"
+                                MinWidth="150"/>
+        
+            <DataGridTextColumn Header="Created at" 
+                                Binding="{Binding CreatedAt}" 
+                                Width="170"
+                                IsReadOnly="True"/>
+        
+            <DataGridCheckBoxColumn Header="Completed" 
+                                    Binding="{Binding IsCompleted}" 
+                                    Width="130"/>
+        </DataGrid.Columns>
+    </DataGrid>
+</Window>
