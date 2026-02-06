@@ -25,7 +25,7 @@
 
     <DataGrid Margin="20" 
               Name="taskDataGrid"
-              ItemsSource="{Binding FilteredTasks}" 
+              ItemsSource="{Binding Tasks}" 
               SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
               AutoGenerateColumns="False" 
               IsReadOnly="False" 

@@ -56,7 +56,7 @@ public class MainViewModelTests
 
         unitUnderTest.LoadTasksCommand.Execute(null);
 
-        Assert.Equal(unitUnderTest.FilteredTasks?.Count, 3);
+        Assert.Equal(unitUnderTest.Tasks?.Count, 3);
     }
 
     [Fact]
@@ -71,7 +71,7 @@ public class MainViewModelTests
 
         unitUnderTest.AddTaskCommand.Execute(null);
 
-        Assert.Equal(unitUnderTest.FilteredTasks?.Count, 4);
+        Assert.Equal(unitUnderTest.Tasks?.Count, 4);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class MainViewModelTests
         unitUnderTest.AddTaskCommand.Execute(null);
         unitUnderTest.AddTaskCommand.Execute(null);
 
-        Assert.Equal(3, unitUnderTest.FilteredTasks?.Count(t => titles.Contains(t.Title)));
+        Assert.Equal(3, unitUnderTest.Tasks?.Count(t => titles.Contains(t.Title)));
     }
 
     [Fact]
@@ -100,11 +100,11 @@ public class MainViewModelTests
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
         unitUnderTest.LoadTasksCommand.Execute(null);
 
-        unitUnderTest.SelectedTask = unitUnderTest.FilteredTasks.LastOrDefault();
+        unitUnderTest.SelectedTask = unitUnderTest.Tasks.LastOrDefault();
 
         unitUnderTest.SoftDeleteTaskCommand.Execute(null);
 
-        Assert.Equal(2, unitUnderTest.FilteredTasks?.Where(t => !t.IsDeleted).Count());
+        Assert.Equal(2, unitUnderTest.Tasks?.Where(t => !t.IsDeleted).Count());
     }
 
     [Fact]

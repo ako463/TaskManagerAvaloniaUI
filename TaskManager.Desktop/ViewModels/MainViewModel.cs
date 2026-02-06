@@ -2,7 +2,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -21,42 +20,27 @@ namespace TaskManager.Desktop.ViewModels
         [ObservableProperty]
         private TaskModel? _selectedTask;
 
-        private ObservableCollection<TaskModel> _filteredItems = new();
-        private ObservableCollection<TaskModel> _allTasks = new();
+        private ObservableCollection<TaskModel> _tasks = new();
 
         public MainViewModel(ITaskService taskService)
         {
             _taskService = taskService;
         }
 
-        public ObservableCollection<TaskModel> FilteredTasks
+        public ObservableCollection<TaskModel> Tasks
         {
-            get => _filteredItems;
+            get => _tasks;
             set
             {
-                _filteredItems = value;
-                OnPropertyChanged(nameof(FilteredTasks));
+                _tasks = value;
+                OnPropertyChanged(nameof(Tasks));
             }
-        }
-
-        private void ApplyFilter()
-        {
-            var filtered = _allTasks.Where(item => !item.IsDeleted).ToList();
-            FilteredTasks = new ObservableCollection<TaskModel>(filtered);
         }
 
         [RelayCommand]
         private async Task LoadTasks()
         {
-            var tasks = await _taskService.GetTasksAsync();
-            foreach (var task in tasks)
-            {
-                task.PropertyChanged += OnTaskChanged;
-
-                _allTasks.Add(task);
-            }
-
-            ApplyFilter();
+            await ReloadTasks();
         }
 
         [RelayCommand]
@@ -64,18 +48,33 @@ namespace TaskManager.Desktop.ViewModels
         {
             var newTask = await _taskService.CreateTaskAsync();
 
-            _allTasks.Add(newTask);
-
-            ApplyFilter();
-
             newTask.PropertyChanged += OnTaskChanged;
+
+            _tasks.Add(newTask);
 
             TaskAdded?.Invoke(newTask);
         }
 
+        [RelayCommand]
+        private async Task SoftDeleteTask()
+        {
+            if (SelectedTask != null)
+            {
+                if (await _taskService.SoftDelete(SelectedTask.Id))
+                {
+                    foreach (var task in _tasks)
+                    {
+                        task.PropertyChanged -= OnTaskChanged;
+                    }
+
+                    await ReloadTasks();
+                }
+            }
+        }
+
         private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)
         {
-            if (sender is TaskModel task 
+            if (sender is TaskModel task
                 && task.HasErrors == false
                 && (e.PropertyName == nameof(task.Title)
                 || e.PropertyName == nameof(task.IsCompleted)))
@@ -84,14 +83,16 @@ namespace TaskManager.Desktop.ViewModels
             }
         }
 
-        [RelayCommand]
-        private async Task SoftDeleteTask()
+        private async Task ReloadTasks()
         {
-            if (SelectedTask != null)
-            {
-                SelectedTask.IsDeleted = await _taskService.SoftDelete(SelectedTask.Id);
+            _tasks.Clear();
 
-                ApplyFilter();
+            var tasks = await _taskService.GetTasksAsync();
+            foreach (var task in tasks)
+            {
+                task.PropertyChanged += OnTaskChanged;
+
+                _tasks.Add(task);
             }
         }
     }
