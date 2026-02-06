@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Desktop.Domain;
@@ -18,6 +17,12 @@ public class TaskRepository : ITaskRepository
     {
         _context = context ?? throw new ArgumentNullException(nameof(context));
     }
+
+    public async Task<IEnumerable<TaskItem>> GetAllTaskItemsAsync()
+    {
+        return await _context.TasksItems.ToListAsync();
+    }
+
 
     public async Task<IEnumerable<TaskItem>> GetTaskItemsAsync()
     {

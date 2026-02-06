@@ -20,7 +20,7 @@ public class TaskNamingService : ITaskNamingService
 
     public async Task<string> CreateDefaultTitleAsync()
     {
-        var tasks = await _taskRepository.GetTaskItemsAsync();
+        var tasks = await _taskRepository.GetAllTaskItemsAsync();
 
         var lastDefaultTitle = tasks.Where(t => Regex.IsMatch(t.Title ?? "", taskTitlePattern))
             .Select(t => t.Title)

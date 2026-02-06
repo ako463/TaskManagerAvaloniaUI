@@ -17,8 +17,10 @@ public class TaskNamingServiceTests
             TaskItem.New("Task 3", new DateTime(2026, 02, 04, 16, 20, 11)),
         };
 
+        list.Last().MarkAsDelete();
+
         Mock<ITaskRepository> _taskRepositoryMock = new();
-        _taskRepositoryMock.Setup(x => x.GetTaskItemsAsync()).Returns(Task.FromResult<IEnumerable<TaskItem>>(list));
+        _taskRepositoryMock.Setup(x => x.GetAllTaskItemsAsync()).Returns(Task.FromResult<IEnumerable<TaskItem>>(list));
 
         var unitUnderTest = new TaskNamingService(_taskRepositoryMock.Object);
 
