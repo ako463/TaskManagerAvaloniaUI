@@ -10,81 +10,40 @@ public class TaskRepositoryTests
 {
     private readonly TaskItemContextStub _context;
 
+    List<TaskItem> _tasks;
+
     public TaskRepositoryTests()
     {
         var dbContextOptions = new DbContextOptions<TaskItemContext>();
         
         _context = new TaskItemContextStub(dbContextOptions);
+
+        _tasks = new List<TaskItem>
+        {
+            TaskItem.New("Task 1", new DateTime(2025, 12, 1, 12, 0, 0)),
+            TaskItem.New("Task 2", new DateTime(2025, 12, 1, 13, 0, 0)),
+            TaskItem.New("Task 3", new DateTime(2025, 12, 1, 14, 0, 0))
+        };
     }
 
     [Fact]
     public async Task TaskRepository_ShouldAddNewTask()
     {
-        TaskItem taskItem = new()
-        {
-            Title = "My task",
-            CreatedAt = new DateTime(2022, 12, 1, 12, 0, 0),
-        };
+        string title = "My task";
+        var taskItem = TaskItem.New(title, new DateTime(2025, 12, 1, 12, 0, 0));
 
         var unitUnderTest = new TaskRepository(_context);
 
-        var updatedTaskItem = await unitUnderTest.AddAsync(taskItem);
+        var updatedTaskItem = await unitUnderTest.InsertAsync(taskItem);
 
         Assert.Equal(taskItem.Title, updatedTaskItem.Title);
         Assert.NotNull(updatedTaskItem.Id.ToString());
     }
 
     [Fact]
-    public async Task TaskRepository_ShouldRejectAddingNewTask_ThrowDueToEmptyTitle()
-    {
-        TaskItem taskItem = new()
-        {
-            Title = string.Empty
-        };
-
-        var unitUnderTest = new TaskRepository(_context);
-
-        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
-
-        var savedTasks = _context.TasksItems;
-
-        Assert.NotNull(exception);
-        Assert.Equal(TaskItem.EmptyTitleError, exception.Message);
-        Assert.Empty(savedTasks);
-    }
-
-    [Fact]
-    public async Task TaskRepository_ShouldRejectAddingNewTask_ThrowDueToLongTitle()
-    {
-        string longTitle = new string('a', 110);
-
-        var taskItem = new TaskItem()
-        {
-            Title = longTitle,
-        };
-
-        var unitUnderTest = new TaskRepository(_context);
-
-        var exception = await Record.ExceptionAsync(async () => await unitUnderTest.AddAsync(taskItem));
-
-        var savedTasks = _context.TasksItems;
-
-        Assert.NotNull(exception);
-        Assert.Equal(TaskItem.LongTitleError, exception.Message);
-        Assert.Empty(savedTasks);
-    }
-
-    [Fact]
     public async Task TaskRepository_ShouldSoftDeleteTask_Success()
     {
-        var tasks = new List<TaskItem>
-        {
-            new TaskItem() { Title = "Task 1" },
-            new TaskItem() { Title = "Task 2" },
-            new TaskItem() { Title = "Task 3" }
-        };
-
-        await _context.TasksItems.AddRangeAsync(tasks);
+        await _context.TasksItems.AddRangeAsync(_tasks);
         await _context.SaveChangesAsync();
 
         var taskItemToSoftDelete = _context.TasksItems.Last();
@@ -103,26 +62,17 @@ public class TaskRepositoryTests
     {
         string newTitle = "Updated task title";
         
-        var tasks = new List<TaskItem>
-        {
-            new TaskItem() { Title = "Task 1" },
-            new TaskItem() { Title = "Task 2" },
-            new TaskItem() { Title = "Task 3" }
-        };
-        
-        await _context.TasksItems.AddRangeAsync(tasks);
+        await _context.TasksItems.AddRangeAsync(_tasks);
         await _context.SaveChangesAsync();
 
-        var affectedTaskItem = _context.TasksItems.Last();
-
-        var taskItemToUpdate = new TaskItem()
-        {
-            Id = affectedTaskItem.Id,
-            Title = newTitle,
-            IsCompleted = true
-        };
+        var affectedTaskItem = _context.TasksItems.Last();        
 
         var unitUnderTest = new TaskRepository(_context);
+
+        var taskItemToUpdate = await unitUnderTest.GetByIdAsync(affectedTaskItem.Id);
+
+        taskItemToUpdate.SetTitle(newTitle);
+        taskItemToUpdate.SetCompleted(true);
 
         bool succeed = await unitUnderTest.UpdateAsync(taskItemToUpdate);
 

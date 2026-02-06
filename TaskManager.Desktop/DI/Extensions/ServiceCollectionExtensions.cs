@@ -27,6 +27,7 @@ public static class ServiceCollectionExtensions
                 options.UseSqlite(configuration.GetValue<string>("Database:ConnectionStrings:Sqlite")));
         }
 
+        collection.AddScoped<ITaskNamingService, TaskNamingService>();
         collection.AddScoped<ITaskRepository, TaskRepository>();
         collection.AddTransient<ITaskService, TaskService>();
         collection.AddTransient<MainViewModel>();

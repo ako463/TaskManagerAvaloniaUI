@@ -46,7 +46,7 @@ public class MainViewModelTests
             }
         };
 
-        _taskServiceMock.Setup(x => x.GetTasks()).Returns(Task.FromResult<IEnumerable<TaskModel>>(list));
+        _taskServiceMock.Setup(x => x.GetTasksAsync()).Returns(Task.FromResult<IEnumerable<TaskModel>>(list));
     }
 
     [Fact]
@@ -63,7 +63,7 @@ public class MainViewModelTests
     public void MainViewModel_ShouldSuccessfullyAddNewTask()
     {
         _taskServiceMock
-            .Setup(x => x.Add(It.IsAny<TaskModel>()))
+            .Setup(x => x.CreateTaskAsync())
             .Returns(Task.FromResult(new TaskModel()));
 
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
@@ -94,7 +94,7 @@ public class MainViewModelTests
     public void MainViewModel_ShouldSuccessfullySoftDeleteTask()
     {
         _taskServiceMock
-            .Setup(x => x.SoftDelete(It.IsAny<TaskModel>()))
+            .Setup(x => x.SoftDelete(It.IsAny<Guid>()))
             .Returns(Task.FromResult(true));
 
         var unitUnderTest = new MainViewModel(_taskServiceMock.Object);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TaskManager.Desktop.Domain;
@@ -8,34 +9,52 @@ namespace TaskManager.Desktop.Services;
 
 public class TaskService : ITaskService
 {
+    private readonly ITaskNamingService _taskNameService;
     private readonly ITaskRepository _taskRepository;
 
-    public TaskService(ITaskRepository taskRepository)
+    public TaskService(ITaskNamingService taskNameService, ITaskRepository taskRepository)
     {
         _taskRepository = taskRepository;
+        _taskNameService = taskNameService;
     }
 
-    public async Task<IEnumerable<TaskModel>> GetTasks()
+    public async Task<IEnumerable<TaskModel>> GetTasksAsync()
     {
         var taskItems = await _taskRepository.GetTaskItemsAsync();
 
         return taskItems.Select(TaskItemMapper.MapToTaskModel);
     }
 
-    public async Task<TaskModel> Add(TaskModel task)
+    public async Task<TaskModel> CreateTaskAsync()
     {
-        var updatedTaskItem = await _taskRepository.AddAsync(TaskItemMapper.MapFromTaskModel(task));
+        string defaultTtitle = await _taskNameService.CreateDefaultTitleAsync();
+        var taskItem = TaskItem.New(defaultTtitle, DateTimeOffset.UtcNow);
+
+        var updatedTaskItem = await _taskRepository.InsertAsync(taskItem);
 
         return TaskItemMapper.MapToTaskModel(updatedTaskItem);
     }
 
-    public async Task<bool> SoftDelete(TaskModel task)
-    {   
-        return await _taskRepository.SoftDeleteAsync(TaskItemMapper.MapFromTaskModel(task));
+    public async Task<bool> SoftDelete(Guid taskId)
+    {
+        var taskItem = await _taskRepository.GetByIdAsync(taskId)
+           ?? throw new InvalidOperationException($"Task {taskId} not found");
+
+        taskItem.MarkAsDelete();
+
+        await _taskRepository.UpdateAsync(taskItem);
+
+        return await _taskRepository.SoftDeleteAsync(taskItem);
     }
 
     public async Task<bool> Update(TaskModel task)
     {
-        return await _taskRepository.UpdateAsync(TaskItemMapper.MapFromTaskModel(task));
+        var taskItem = await _taskRepository.GetByIdAsync(task.Id)
+           ?? throw new InvalidOperationException($"Task {task.Id} not found");
+
+        taskItem.SetTitle(task.Title);
+        taskItem.SetCompleted(task.IsCompleted);
+
+        return await _taskRepository.UpdateAsync(taskItem);
     }
 }

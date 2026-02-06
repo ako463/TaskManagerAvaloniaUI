@@ -13,7 +13,6 @@ namespace TaskManager.Desktop.ViewModels
 {
     public partial class MainViewModel : ViewModelBase
     {
-        private readonly string _initialTaskTitle = "Task ";
         private readonly ITaskService _taskService;
 
         public delegate void TaskAddedHandler(object item);
@@ -49,7 +48,7 @@ namespace TaskManager.Desktop.ViewModels
         [RelayCommand]
         private async Task LoadTasks()
         {
-            var tasks = await _taskService.GetTasks();
+            var tasks = await _taskService.GetTasksAsync();
             foreach (var task in tasks)
             {
                 task.PropertyChanged += OnTaskChanged;
@@ -63,18 +62,7 @@ namespace TaskManager.Desktop.ViewModels
         [RelayCommand]
         private async Task AddTask()
         {
-            string taskTitlePattern = @$"{_initialTaskTitle}(\d+)";
-            int nextTitleId =  _allTasks.Count(t => Regex.IsMatch(t.Title ?? "", taskTitlePattern)) + 1;
-
-            var newTask = new TaskModel()
-            {
-                Title = $"{_initialTaskTitle}{nextTitleId}",
-                CreatedAt = DateTimeOffset.UtcNow,
-                IsCompleted = false,
-                IsDeleted = false,
-            };
-
-            newTask = await _taskService.Add(newTask);
+            var newTask = await _taskService.CreateTaskAsync();
 
             _allTasks.Add(newTask);
 
@@ -101,7 +89,7 @@ namespace TaskManager.Desktop.ViewModels
         {
             if (SelectedTask != null)
             {
-                SelectedTask.IsDeleted = await _taskService.SoftDelete(SelectedTask);
+                SelectedTask.IsDeleted = await _taskService.SoftDelete(SelectedTask.Id);
 
                 ApplyFilter();
             }

@@ -6,34 +6,11 @@ namespace TaskManager.Tests.UnitTests;
 public class TaskItemMapperTests
 {
     [Fact]
-    public void TaskItemMapper_ShouldMapFromTaskModelCorrectly()
-    {
-        var taskModel = new TaskModel()
-        {
-            Title = "Task ABC",
-            CreatedAt = new DateTime(2026, 02, 04, 16, 20, 11),
-            IsCompleted = true,
-            IsDeleted = true,
-        };
-
-        var taskItem = TaskItemMapper.MapFromTaskModel(taskModel);
-
-        Assert.Equal(taskModel.Title, taskItem.Title);
-        Assert.Equal(taskModel.CreatedAt, taskItem.CreatedAt);
-        Assert.Equal(taskModel.IsCompleted, taskItem.IsCompleted);
-        Assert.Equal(taskModel.IsDeleted, taskItem.IsDeleted);        
-    }
-
-    [Fact]
     public void TaskItemMapper_ShouldMapToTaskModelCorrectly()
     {
-        var taskItem = new TaskItem()
-        {
-            Title = "Task DEF",
-            CreatedAt = new DateTime(2026, 02, 04, 16, 20, 11),
-            IsCompleted = true,
-            IsDeleted = true,
-        };
+        string title = "Task ABC";
+
+        var taskItem = TaskItem.New(title, new DateTime(2026, 02, 04, 16, 20, 11));
 
         var taskModel = TaskItemMapper.MapToTaskModel(taskItem);
 

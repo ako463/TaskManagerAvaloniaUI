@@ -6,8 +6,6 @@ namespace TaskManager.Tests.UnitTests;
 
 public class TaskValidationTests
 {
-    private ValidationContext? _validationContext;
-
     [Fact]
     public void TaskModel_ShouldNotHaveAnyErrors()
     {
@@ -15,7 +13,7 @@ public class TaskValidationTests
         {
             Index = 1,
             Title = "Task A",
-            CreatedAt = DateTimeOffset.UtcNow,
+            CreatedAt = new DateTime(2025, 12, 1, 12, 0, 0),
             IsCompleted = false,
             IsDeleted = false,
         };
@@ -54,33 +52,27 @@ public class TaskValidationTests
     [Fact]
     public void TaskItem_ShouldNotHaveAnyErrors()
     {
-        var unitUnderTest = new TaskItem()
-        {
-            Title = "Task A",
-        };
+        string title = "Task A";
+        TaskItem? taskItem = null;
 
-        _validationContext = new ValidationContext(unitUnderTest);
+        var exception = Record.Exception(() => taskItem = TaskItem.New(title, new DateTime(2025, 12, 1, 12, 0, 0)));
 
-        var validationresults = unitUnderTest.Validate(_validationContext);
-
-        Assert.Equal(0, validationresults?.Count());
-        Assert.Equal(ValidationResult.Success, validationresults?.FirstOrDefault());
+        Assert.Null(exception);
+        Assert.NotNull(taskItem);
     }
 
     [Fact]
     public void TaskItem_ShouldHaveError_EmptyTaskTitle()
     {
-        var unitUnderTest = new TaskItem()
-        {
-            Title = string.Empty,
-        };
-        
-        _validationContext = new ValidationContext(unitUnderTest);
+        string title = string.Empty;
 
-        var validationresults = unitUnderTest.Validate(_validationContext);
+        TaskItem? taskItem = null;
 
-        Assert.Equal(1, validationresults?.Count());
-        Assert.Equal(TaskItem.EmptyTitleError, validationresults?.FirstOrDefault()?.ErrorMessage);
+        var exception = Record.Exception(() => taskItem = TaskItem.New(title, new DateTime(2025, 12, 1, 12, 0, 0)));
+
+        Assert.NotNull(exception);
+        Assert.Equal(TaskItem.EmptyTitleError, exception.Message);
+        Assert.Null(taskItem);
     }
 
     [Fact]
@@ -88,16 +80,12 @@ public class TaskValidationTests
     {
         string longTitle = new string('a', 110);
 
-        var unitUnderTest = new TaskItem()
-        {
-            Title = longTitle,
-        };
+        TaskItem? taskItem = null;
 
-        _validationContext = new ValidationContext(unitUnderTest);
+        var exception = Record.Exception(() => taskItem = TaskItem.New(longTitle, new DateTime(2025, 12, 1, 12, 0, 0)));
 
-        var validationresults = unitUnderTest.Validate(_validationContext);
-
-        Assert.Equal(1, validationresults?.Count());
-        Assert.Equal(TaskItem.LongTitleError, validationresults?.FirstOrDefault()?.ErrorMessage);
+        Assert.NotNull(exception);
+        Assert.Equal(TaskItem.LongTitleError, exception.Message);
+        Assert.Null(taskItem);
     }
 }

@@ -5,12 +5,12 @@ namespace TaskManager.Tests.UnitTests.Stubs;
 
 public class TaskServiceStub : ITaskService
 {
-    public async Task<TaskModel> Add(TaskModel task)
+    public Task<TaskModel> CreateTaskAsync()
     {
-        return await Task.FromResult(task);
+        throw new NotImplementedException();
     }
 
-    public async Task<IEnumerable<TaskModel>> GetTasks()
+    public async Task<IEnumerable<TaskModel>> GetTasksAsync()
     {
         return await Task.FromResult<IEnumerable<TaskModel>>(
             [
@@ -29,7 +29,7 @@ public class TaskServiceStub : ITaskService
             ]);
     }
 
-    public Task<bool> SoftDelete(TaskModel task)
+    public Task<bool> SoftDelete(Guid id)
     {
         throw new NotImplementedException();
     }

@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Desktop.Domain;
+using TaskManager.Desktop.Domain.Exceptions;
 using TaskManager.Desktop.Infrastructure;
 
 namespace TaskManager.Desktop.Services;
@@ -24,7 +26,15 @@ public class TaskRepository : ITaskRepository
             .ToListAsync();
     }
 
-    public async Task<TaskItem> AddAsync(TaskItem taskItem)
+    public async Task<TaskItem> GetByIdAsync(Guid id)
+    {
+        var taskItem = await _context.TasksItems
+                .FirstOrDefaultAsync(t => t.Id == id);
+
+        return taskItem ?? throw new NotFoundException($"Task with id {id} not found");
+    }
+
+    public async Task<TaskItem> InsertAsync(TaskItem taskItem)
     {
         if (taskItem == null)
             throw new ArgumentNullException(nameof(taskItem));
@@ -43,7 +53,7 @@ public class TaskRepository : ITaskRepository
         if (task == null)
             return false;
 
-        task.IsDeleted = true;
+        task.MarkAsDelete();
 
         return await _context.SaveChangesAsync() > 0;
     }

@@ -15,16 +15,4 @@ public static class TaskItemMapper
             Title = taskItem.Title
         };
     }
-
-    public static TaskItem MapFromTaskModel(TaskModel taskModel)
-    {
-        return new TaskItem()
-        {
-            Id = taskModel.Id,
-            CreatedAt = taskModel.CreatedAt,
-            IsCompleted = taskModel.IsCompleted,
-            IsDeleted = taskModel.IsDeleted,
-            Title = taskModel.Title!
-        };
-    }
 }
