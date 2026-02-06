@@ -33,7 +33,6 @@ namespace TaskManager.Desktop.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Title")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
