@@ -40,10 +40,6 @@ public class TaskService : ITaskService
         var taskItem = await _taskRepository.GetByIdAsync(taskId)
            ?? throw new InvalidOperationException($"Task {taskId} not found");
 
-        taskItem.MarkAsDelete();
-
-        await _taskRepository.UpdateAsync(taskItem);
-
         return await _taskRepository.SoftDeleteAsync(taskItem);
     }
 
