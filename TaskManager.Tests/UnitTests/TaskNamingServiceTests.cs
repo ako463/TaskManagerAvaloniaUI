@@ -22,9 +22,9 @@ public class TaskNamingServiceTests
         Mock<ITaskRepository> _taskRepositoryMock = new();
         _taskRepositoryMock.Setup(x => x.GetAllTaskItemsAsync()).Returns(Task.FromResult<IEnumerable<TaskItem>>(list));
 
-        var unitUnderTest = new TaskNamingService(_taskRepositoryMock.Object);
+        var namingService = new TaskNamingService(_taskRepositoryMock.Object);
 
-        string newTitle = await unitUnderTest.CreateDefaultTitleAsync();
+        string newTitle = await namingService.CreateDefaultTitleAsync();
 
         Assert.Equal("Task 4", newTitle);
     }

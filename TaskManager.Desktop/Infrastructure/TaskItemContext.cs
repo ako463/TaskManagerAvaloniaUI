@@ -1,9 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TaskManager.Desktop.Domain;
 
@@ -19,20 +14,6 @@ public class TaskItemContext : DbContext
 
     public TaskItemContext()
     {
-    }
-
-    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
-    {
-        ValidateEntities();
-
-        return base.SaveChangesAsync(cancellationToken);
-    }
-
-    public override int SaveChanges()
-    {
-        ValidateEntities();
-
-        return base.SaveChanges();
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -52,19 +33,6 @@ public class TaskItemContext : DbContext
             {
                 optionsBuilder.UseSqlite(configuration!.GetValue<string>("Database:ConnectionStrings:Sqlite"));
             }
-        }
-    }
-
-    protected void ValidateEntities()
-    {
-        var validationErrors = ChangeTracker
-            .Entries<IValidatableObject>()
-            .SelectMany(e => e.Entity.Validate(new ValidationContext(e)))
-            .Where(r => r != ValidationResult.Success);
-
-        if (validationErrors.Any())
-        {
-            throw new ValidationException(validationErrors.First().ErrorMessage);
         }
     }
 }

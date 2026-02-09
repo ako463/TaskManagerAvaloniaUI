@@ -36,14 +36,11 @@ public class TaskRepository : ITaskRepository
         var taskItem = await _context.TasksItems
                 .FirstOrDefaultAsync(t => t.Id == id);
 
-        return taskItem ?? throw new NotFoundException($"Task with id {id} not found");
+        return taskItem ?? throw new NotFoundException($"Task {id} not found");
     }
 
     public async Task<TaskItem> InsertAsync(TaskItem taskItem)
     {
-        if (taskItem == null)
-            throw new ArgumentNullException(nameof(taskItem));
-
         await _context.TasksItems.AddAsync(taskItem);
         await _context.SaveChangesAsync();
 
@@ -52,8 +49,7 @@ public class TaskRepository : ITaskRepository
 
     public async Task<bool> SoftDeleteAsync(TaskItem taskItem)
     {
-        var task = await _context.TasksItems
-            .FirstOrDefaultAsync(t => t.Id == taskItem.Id && !t.IsDeleted);
+        var task = await FindNotDeletedById(taskItem.Id);
 
         if (task == null)
             return false;
@@ -65,18 +61,20 @@ public class TaskRepository : ITaskRepository
 
     public async Task<bool> UpdateAsync(TaskItem taskItem)
     {
-        if (taskItem == null)
-            throw new ArgumentNullException(nameof(taskItem));
+        var task = await FindNotDeletedById(taskItem.Id);
 
-        var existingTask = await _context.TasksItems
-            .FirstOrDefaultAsync(t => t.Id == taskItem.Id && !t.IsDeleted);
-
-        if (existingTask == null)
+        if (task == null)
             return false;
 
         // Обновляем только необходимые поля
-        _context.Entry(existingTask).CurrentValues.SetValues(taskItem);
+        _context.Entry(task).CurrentValues.SetValues(taskItem);
 
         return await _context.SaveChangesAsync() > 0;
+    }
+
+    private async Task<TaskItem?> FindNotDeletedById(Guid id)
+    {
+        return await _context.TasksItems
+            .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
     }
 }

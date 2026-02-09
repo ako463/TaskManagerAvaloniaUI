@@ -7,8 +7,6 @@ using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Desktop.ViewModels;
 using TaskManager.Desktop.Views;
 using TaskManager.Desktop.DI.Extensions;
-using Microsoft.Extensions.Configuration;
-using System.IO;
 using Avalonia.Threading;
 using System.Threading.Tasks;
 using System;
