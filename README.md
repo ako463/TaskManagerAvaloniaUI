@@ -22,7 +22,7 @@ dotnet build
         "UsePostgres": false,
         "ConnectionStrings": {
             "Postgres": "Host=localhost;Port=5432;Database=tasks;Username=postgres;Password=admin",
-            "Sqlite": "Data Source=C:/data/tasks.db"
+            "Sqlite": "Data Source=tasks.db"
         }
     }
 }
