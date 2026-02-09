@@ -101,7 +101,6 @@ namespace TaskManager.Desktop
         private void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
         {
             LogException(e.Exception, "TaskScheduler");
-            ShowErrorNotification(e.Exception);
 
             e.SetObserved();
         }
