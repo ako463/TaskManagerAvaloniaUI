@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using TaskManager.Desktop.Domain;
+﻿using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Models;
 
 namespace TaskManager.Tests.UnitTests;
@@ -9,7 +8,7 @@ public class TaskValidationTests
     [Fact]
     public void TaskModel_ShouldNotHaveAnyErrors()
     {
-        var unitUnderTest = new TaskModel()
+        var taskModel = new TaskModel()
         {
             Index = 1,
             Title = "Task A",
@@ -18,20 +17,20 @@ public class TaskValidationTests
             IsDeleted = false,
         };
 
-        Assert.False(unitUnderTest.HasErrors);
+        Assert.False(taskModel.HasErrors);
     }
 
     [Fact]
     public void TaskModel_ShouldHaveError_EmptyTaskTitle()
     {
-        var unitUnderTest = new TaskModel()
+        var taskModel = new TaskModel()
         {
             Title = string.Empty,
         };
 
-        Assert.True(unitUnderTest.HasErrors);
-        Assert.Equal(unitUnderTest.GetErrors()?.Count(), 1);
-        Assert.Equal(TaskItem.EmptyTitleError, unitUnderTest.GetErrors()?.First().ErrorMessage);
+        Assert.True(taskModel.HasErrors);
+        Assert.Equal(taskModel.GetErrors()?.Count(), 1);
+        Assert.Equal(TaskItem.EmptyTitleError, taskModel.GetErrors()?.First().ErrorMessage);
     }
 
     [Fact]
@@ -39,14 +38,14 @@ public class TaskValidationTests
     {
         string longTitle = new string('a', 110);
 
-        var unitUnderTest = new TaskModel()
+        var taskModel = new TaskModel()
         {
             Title = longTitle,
         };
 
-        Assert.True(unitUnderTest.HasErrors);
-        Assert.Equal(unitUnderTest.GetErrors()?.Count(), 1);
-        Assert.Equal(TaskItem.LongTitleError, unitUnderTest.GetErrors()?.First().ErrorMessage);
+        Assert.True(taskModel.HasErrors);
+        Assert.Equal(taskModel.GetErrors()?.Count(), 1);
+        Assert.Equal(TaskItem.LongTitleError, taskModel.GetErrors()?.First().ErrorMessage);
     }
 
     [Fact]

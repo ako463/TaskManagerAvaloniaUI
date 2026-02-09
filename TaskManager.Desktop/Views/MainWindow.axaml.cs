@@ -1,10 +1,6 @@
 using System;
-using System.Linq;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Templates;
 using Avalonia.Threading;
-using Avalonia.VisualTree;
 using TaskManager.Desktop.ViewModels;
 
 namespace TaskManager.Desktop.Views
@@ -29,6 +25,7 @@ namespace TaskManager.Desktop.Views
 
         private void OnTaskAdded(object item)
         {
+            // навигируем до новой строки
             this.taskDataGrid.SelectedItem = item;
             Dispatcher.UIThread.InvokeAsync((Action)(() => taskDataGrid.ScrollIntoView(item, null)), DispatcherPriority.ContextIdle);
         }

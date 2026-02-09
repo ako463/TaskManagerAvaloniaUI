@@ -8,6 +8,7 @@ namespace TaskManager.Tests.UnitTests;
 public class MainViewModelTests
 {
     private Mock<ITaskService> _taskServiceMock;
+    private MainViewModel _mainViewModel;
 
     public MainViewModelTests()
     {
@@ -39,16 +40,16 @@ public class MainViewModelTests
         };
 
         _taskServiceMock.Setup(x => x.GetTasksAsync()).Returns(Task.FromResult<IEnumerable<TaskModel>>(list));
+
+        _mainViewModel = new MainViewModel(_taskServiceMock.Object);
     }
 
     [Fact]
     public void MainViewModel_ShouldReturnCorrectAmountOfTasks()
     {
-        var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
+        _mainViewModel.LoadTasksCommand.Execute(null);
 
-        unitUnderTest.LoadTasksCommand.Execute(null);
-
-        Assert.Equal(unitUnderTest.Tasks?.Count, 3);
+        Assert.Equal(_mainViewModel.Tasks?.Count, 3);
     }
 
     [Fact]
@@ -58,12 +59,11 @@ public class MainViewModelTests
             .Setup(x => x.CreateTaskAsync())
             .Returns(Task.FromResult(new TaskModel()));
 
-        var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
-        unitUnderTest.LoadTasksCommand.Execute(null);
+        _mainViewModel.LoadTasksCommand.Execute(null);
 
-        unitUnderTest.AddTaskCommand.Execute(null);
+        _mainViewModel.AddTaskCommand.Execute(null);
 
-        Assert.Equal(4, unitUnderTest.Tasks?.Count);
+        Assert.Equal(4, _mainViewModel.Tasks?.Count);
     }
 
     [Fact]
@@ -73,22 +73,19 @@ public class MainViewModelTests
             .Setup(x => x.SoftDelete(It.IsAny<Guid>()))
             .Returns(Task.FromResult(true));
 
-        var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
-        unitUnderTest.LoadTasksCommand.Execute(null);
+        _mainViewModel.LoadTasksCommand.Execute(null);
 
-        unitUnderTest.SelectedTask = unitUnderTest.Tasks.LastOrDefault();
+        _mainViewModel.SelectedTask = _mainViewModel.Tasks.LastOrDefault();
 
-        unitUnderTest.SoftDeleteTaskCommand.Execute(null);
+        _mainViewModel.SoftDeleteTaskCommand.Execute(null);
 
-        Assert.Null(unitUnderTest.SelectedTask);
+        Assert.Null(_mainViewModel.SelectedTask);
     }
 
     [Fact]
     public void MainViewModel_ShouldNotThrowSoftDeleteTask_WhenTaskNotSelected()
     {
-        var unitUnderTest = new MainViewModel(_taskServiceMock.Object);
-
-        var exception = Record.Exception(() => unitUnderTest.SoftDeleteTaskCommand.Execute(null));
+        var exception = Record.Exception(() => _mainViewModel.SoftDeleteTaskCommand.Execute(null));
 
         Assert.Null(exception);
     }

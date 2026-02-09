@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Logging;
 using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 
@@ -22,11 +21,6 @@ namespace TaskManager.Desktop.ViewModels
 
         private ObservableCollection<TaskModel> _tasks = new();
 
-        public MainViewModel(ITaskService taskService)
-        {
-            _taskService = taskService;
-        }
-
         public ObservableCollection<TaskModel> Tasks
         {
             get => _tasks;
@@ -35,6 +29,11 @@ namespace TaskManager.Desktop.ViewModels
                 _tasks = value;
                 OnPropertyChanged(nameof(Tasks));
             }
+        }
+
+        public MainViewModel(ITaskService taskService)
+        {
+            _taskService = taskService;            
         }
 
         [RelayCommand]

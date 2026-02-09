@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using TaskManager.Desktop.Domain.Exceptions;
 namespace TaskManager.Desktop.Domain;
 
