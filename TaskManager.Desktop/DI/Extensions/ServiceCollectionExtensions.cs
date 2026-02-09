@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -32,13 +33,20 @@ public static class ServiceCollectionExtensions
         collection.AddTransient<ITaskService, TaskService>();
         collection.AddTransient<MainViewModel>();
 
+        var loggingConfig = configuration.GetSection("Logging");
+        string path = loggingConfig.GetValue<string>("path") ?? "logs/log-.txt";
+        var rollingInterval = (RollingInterval)Enum.Parse(typeof(RollingInterval), loggingConfig.GetValue<string>("rollingInterval") ?? "Day");
+        int retainedFileCountLimit = loggingConfig.GetValue<int>("retainedFileCountLimit");
+        string outputTemplate = loggingConfig.GetValue<string>("outputTemplate") 
+            ?? "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message}{NewLine}{Exception}";
+
         Log.Logger = new LoggerConfiguration()
             .MinimumLevel.Debug()
             .WriteTo.File(
-                path: "logs/log-.txt",
-                rollingInterval: RollingInterval.Day,
-                retainedFileCountLimit: 7,
-                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}")
+                path: path,
+                rollingInterval: rollingInterval,
+                retainedFileCountLimit: retainedFileCountLimit,
+                outputTemplate: outputTemplate)
             .CreateLogger();
 
         collection.AddLogging(builder =>
