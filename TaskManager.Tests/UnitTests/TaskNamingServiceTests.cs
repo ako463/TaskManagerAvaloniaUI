@@ -9,15 +9,12 @@ public class TaskNamingServiceTests
     [Fact]
     public async Task TaskNamingService_ShouldGiveCorrectDefaultTitle()
     {
-        var list = new List<TaskItem>()
-        {
-            TaskItem.New("Task 1", new DateTime(2026, 02, 04, 16, 20, 11)),
-            TaskItem.New("Task 2", new DateTime(2026, 02, 04, 16, 20, 11)),
-            TaskItem.New("Some other title", new DateTime(2026, 02, 04, 16, 20, 11)),
-            TaskItem.New("Task 3", new DateTime(2026, 02, 04, 16, 20, 11)),
-        };
+        var date = new DateTime(2026, 02, 04, 16, 20, 11);
+        var list = Enumerable.Range(3, 10).Select(i => TaskItem.New($"Task {i}", date)).ToList();
 
         list.Last().MarkAsDelete();
+        
+        list.Add(TaskItem.New("Some other title", date));
 
         Mock<ITaskRepository> _taskRepositoryMock = new();
         _taskRepositoryMock.Setup(x => x.GetAllTaskItemsAsync()).Returns(Task.FromResult<IEnumerable<TaskItem>>(list));
@@ -26,6 +23,6 @@ public class TaskNamingServiceTests
 
         string newTitle = await namingService.CreateDefaultTitleAsync();
 
-        Assert.Equal("Task 4", newTitle);
+        Assert.Equal("Task 13", newTitle);
     }
 }
