@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using TaskManager.Desktop.Domain;
@@ -9,8 +10,11 @@ using TaskManager.Desktop.Infrastructure;
 
 namespace TaskManager.Desktop.Services;
 
-public class TaskRepository : ITaskRepository
+public class TaskRepository : ITaskRepository, ITaskNamingService
 {
+    private const string _initialTaskTitle = "Task ";
+    private readonly string taskTitlePattern = @$"{_initialTaskTitle}(\d+)";
+
     private readonly TaskItemContext _context;
 
     public TaskRepository(TaskItemContext context)
@@ -76,5 +80,17 @@ public class TaskRepository : ITaskRepository
     {
         return await _context.TasksItems
             .FirstOrDefaultAsync(t => t.Id == id && !t.IsDeleted);
+    }
+
+    public async Task<string> CreateDefaultTitleAsync()
+    {
+        var tasks = await GetAllTaskItemsAsync();
+
+        var lastNumber = tasks.Select(t => Regex.Match(t.Title ?? "", taskTitlePattern))
+            .Where(m => m.Success)
+            .Select(m => Convert.ToInt32(m.Groups[1].Value))
+            .LastOrDefault();
+
+        return $"{_initialTaskTitle}{lastNumber + 1}";
     }
 }
