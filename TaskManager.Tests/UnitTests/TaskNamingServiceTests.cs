@@ -1,6 +1,8 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
 using TaskManager.Desktop.Domain;
 using TaskManager.Desktop.Infrastructure;
+using TaskManager.Desktop.Services;
+using TaskManager.Tests.UnitTests.Stubs;
 
 namespace TaskManager.Tests.UnitTests;
 
@@ -9,20 +11,26 @@ public class TaskNamingServiceTests
     [Fact]
     public async Task TaskNamingService_ShouldGiveCorrectDefaultTitle()
     {
+        // Arrange
+        var dbContextOptions = new DbContextOptions<TaskItemContext>();
+        var context = new TaskItemContextStub(dbContextOptions);
+
         var date = new DateTime(2026, 02, 04, 16, 20, 11);
-        var list = Enumerable.Range(3, 10).Select(i => TaskItem.New($"Task {i}", date)).ToList();
+        var tasks = Enumerable.Range(3, 10).Select(i => TaskItem.New($"Task {i}", date)).ToList();
 
-        list.Last().MarkAsDelete();
+        tasks.Last().MarkAsDelete();
         
-        list.Add(TaskItem.New("Some other title", date));
+        tasks.Add(TaskItem.New("Some other title", date));
 
-        Mock<ITaskRepository> _taskRepositoryMock = new();
-        _taskRepositoryMock.Setup(x => x.GetAllTaskItemsAsync()).Returns(Task.FromResult<IEnumerable<TaskItem>>(list));
+        await context.TasksItems.AddRangeAsync(tasks);
+        await context.SaveChangesAsync();
 
-        var namingService = new TaskNamingService(_taskRepositoryMock.Object);
+        ITaskNamingService namingService = new TaskRepository(context);
 
+        // Act
         string newTitle = await namingService.CreateDefaultTitleAsync();
 
+        // Assert
         Assert.Equal("Task 13", newTitle);
     }
 }
