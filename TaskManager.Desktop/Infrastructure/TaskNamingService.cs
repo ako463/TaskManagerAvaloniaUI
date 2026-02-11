@@ -22,21 +22,11 @@ public class TaskNamingService : ITaskNamingService
     {
         var tasks = await _taskRepository.GetAllTaskItemsAsync();
 
-        var lastDefaultTitle = tasks.Where(t => Regex.IsMatch(t.Title ?? "", taskTitlePattern))
-            .Select(t => t.Title)
-            .Order()
+        var lastNumber = tasks.Select(t => Regex.Match(t.Title ?? "", taskTitlePattern))
+            .Where(m => m.Success)
+            .Select(m => Convert.ToInt32(m.Groups[1].Value))
             .LastOrDefault();
 
-        if (lastDefaultTitle != null)
-        {
-            var match = Regex.Match(lastDefaultTitle, taskTitlePattern);
-            if (match.Success)
-            {
-                int nextTitleId = Convert.ToInt32(match.Groups[1].Value) + 1;
-                return $"{_initialTaskTitle}{nextTitleId}";
-            }
-        }
-        
-        return $"{_initialTaskTitle}1";
+        return $"{_initialTaskTitle}{lastNumber + 1}";
     }
 }
