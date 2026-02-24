@@ -1,7 +1,7 @@
 # Simple TaskManager on AvaloniaUI
 Небольшое кроссплатформенное приложение для управления задачами, созданное с использованием Avalonia UI.
 
-<img width="624" height="365" alt="image" src="https://github.com/user-attachments/assets/59babb69-e941-4200-9ff4-5832343397c9" />
+<img width="562" height="406" alt="image" src="https://github.com/user-attachments/assets/597c9ce2-5deb-4779-9e88-e1358aabfd03" />
 
 # Сборка и запуск
 ## 1. Сборка проекта
