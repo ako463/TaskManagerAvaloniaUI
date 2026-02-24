@@ -23,31 +23,52 @@
         <vm:MainViewModel/>
     </Design.DataContext>
 
-    <DataGrid Margin="20" 
-              Name="taskDataGrid"
-              ItemsSource="{Binding Tasks}" 
-              SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
-              AutoGenerateColumns="False" 
-              IsReadOnly="False" 
-              GridLinesVisibility="All"
-              SelectionMode="Single"
-              BorderThickness="1" 
-              BorderBrush="Gray">
+    <Window.Styles>
+        <Style Selector="Button.button">
+		    <Setter Property="Button.Width" Value="120"/>
+            <Setter Property="Button.Height" Value="36"/>
+            <Setter Property="Margin" Value="20"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+    </Window.Styles>
 
-        <DataGrid.Columns>        
-            <DataGridTextColumn Header="Task title" 
-                                Binding="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
-                                Width="*"
-                                MinWidth="150"/>
+    <Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Button Classes="button" Content="Add New" Command="{Binding AddTaskCommand}" HorizontalAlignment="Left"/>
+        <Button Classes="button" Content="Remove" Command="{Binding SoftDeleteTaskCommand}" HorizontalAlignment="Right"/>
+
+        <DataGrid Margin="20"
+                  Grid.Row="1"
+                  Name="taskDataGrid"
+                  ItemsSource="{Binding Tasks}" 
+                  SelectedItem="{Binding SelectedTask, Mode=TwoWay}"
+                  AutoGenerateColumns="False" 
+                  IsReadOnly="False" 
+                  GridLinesVisibility="All"
+                  SelectionMode="Single"
+                  BorderThickness="1" 
+                  BorderBrush="Gray">
+
+            <DataGrid.Columns>        
+                <DataGridTextColumn Header="Task title" 
+                                    Binding="{Binding Title, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" 
+                                    Width="*"
+                                    MinWidth="150"/>
         
-            <DataGridTextColumn Header="Created at" 
-                                Binding="{Binding CreatedAt}" 
-                                Width="170"
-                                IsReadOnly="True"/>
+                <DataGridTextColumn Header="Created at" 
+                                    Binding="{Binding CreatedAt}" 
+                                    Width="170"
+                                    IsReadOnly="True"/>
         
-            <DataGridCheckBoxColumn Header="Completed" 
-                                    Binding="{Binding IsCompleted}" 
-                                    Width="130"/>
-        </DataGrid.Columns>
-    </DataGrid>
+                <DataGridCheckBoxColumn Header="Completed" 
+                                        Binding="{Binding IsCompleted}" 
+                                        Width="130"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
 </Window>

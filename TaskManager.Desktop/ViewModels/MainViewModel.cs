@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Extensions.Logging;
 using TaskManager.Desktop.Models;
 using TaskManager.Desktop.Services;
 
@@ -17,6 +16,7 @@ namespace TaskManager.Desktop.ViewModels
         public event TaskAddedHandler? TaskAdded;
 
         [ObservableProperty]
+        [NotifyCanExecuteChangedFor(nameof(SoftDeleteTaskCommand))]
         private TaskModel? _selectedTask;
 
         private ObservableCollection<TaskModel> _tasks = new();
@@ -54,7 +54,7 @@ namespace TaskManager.Desktop.ViewModels
             TaskAdded?.Invoke(newTask);
         }
 
-        [RelayCommand]
+        [RelayCommand(CanExecute = nameof(CanSoftDeleteTask))]
         private async Task SoftDeleteTask()
         {
             if (SelectedTask != null)
@@ -71,6 +71,11 @@ namespace TaskManager.Desktop.ViewModels
                     await ReloadTasks();
                 }
             }
+        }
+
+        private bool CanSoftDeleteTask()
+        {
+            return SelectedTask != null;
         }
 
         private void OnTaskChanged(object? sender, PropertyChangedEventArgs e)
